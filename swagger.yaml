@@ -1,0 +1,168 @@
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+swagger: "2.0"
+info:
+  description: apiserver
+  title: ez-deploy apiserver.
+  version: 1.0.0
+securityDefinitions:
+  key:
+    type: apiKey
+    name: Cookie
+    in: header
+security:
+  - key: []
+paths:
+  /user/create:
+    post:
+      tags:
+        - Identity
+      operationId: CreateUser
+      description: Create User
+      security: []
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserInfo'
+      responses:
+        "200":
+          description: Create User Success
+        "400":
+          description: Create User Failed
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /user/login:
+    post:
+      tags:
+        - Identity
+      operationId: Login
+      description: User Login
+      security: []
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserInfo'
+      responses:
+        "200":
+          description: Login Success, return user info.
+          schema:
+            $ref: '#/definitions/UserInfo'
+        "401":
+          description: Login Failed
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /user/logout:
+    get:
+      tags:
+        - Identity
+      operationId: Logout
+      description: Logout
+      responses:
+        "200":
+          description: Logout Success
+        "401":
+          description: Logout Failed, no login
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /whoami:
+    get:
+      tags:
+        - Identity
+      operationId: Whoami
+      description: Get Current User's Info
+      responses:
+        "200":
+          description: Get Current User's Info Success
+          schema:
+            $ref: '#/definitions/UserInfo'
+        "401":
+          description: Get Current User's Info Failed, no login
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  UserInfo:
+    type: object
+    description: User's Info
+    properties:
+      id:
+        description: id
+        type: integer
+        example: 1
+      user_name:
+        description: user's name, not unique
+        type: string
+        example: foobar
+      password:
+        description: password
+        type: string
+        example: foobar123
+      email:
+        description: email, unique
+        type: string
+        example: foo@bar.com
+  Token:
+    type: object
+    description: Token Object
+    properties:
+      id:
+        description: id
+        type: integer
+        example: 1
+      user_id:
+        description: user's id
+        type: integer
+        example: 1
+      value:
+        description: token value
+        type: string
+        example: zxicgoiuasie
+      type:
+        description: token type
+        type: string
+        enum:
+        - session
+        - private
+        - public
+      create_at:
+        description: create at, unix timestamp
+        type: integer
+        example: 1528894200
+      update_at:
+        description: create at, unix timestamp
+        type: integer
+        example: 1528894200
+      expired_at:
+        description: expired at, unix timestamp
+        type: integer
+        example: 1528994200
+  Error:
+    type: object
+    properties:
+      message:
+        description: 错误信息
+        type: string
+        example: error message
