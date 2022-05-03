@@ -16,31 +16,31 @@ import (
 type Token struct {
 	// id
 	// Example: 1
-	ID int64 `json:"id,omitempty" db:"id,INTEGER,PRIMARY KEY"`
+	ID int64 `json:"id,omitempty" db:"id,type=INTEGER,PRIMARY"`
 
 	// token type
 	// Enum: [session private public]
-	Type string `json:"type,omitempty" db:"type,VARCHAR(20)"`
+	Type string `json:"type,omitempty" db:"type,type=VARCHAR(20)"`
 
 	// user's id
 	// Example: 1
-	UserID int64 `json:"user_id,omitempty" db:"user_id,INTEGER"`
+	UserID int64 `json:"user_id,omitempty" db:"user_id,type=INTEGER"`
 
 	// token value
 	// Example: zxicgoiuasie
-	Value string `json:"value,omitempty" db:"value,VARCHAR(255)"`
+	Value string `json:"value,omitempty" db:"value,type=VARCHAR(255)"`
 
 	// create at, unix timestamp
 	// Example: 1528894200
-	CreateAt int64 `json:"create_at,omitempty" db:"create_at,INTEGER"`
+	CreateAt int64 `json:"create_at,omitempty" db:"create_at,type=INTEGER"`
 
 	// expired at, unix timestamp
 	// Example: 1528994200
-	ExpiredAt int64 `json:"expired_at,omitempty" db:"expired_at,INTEGER"`
+	ExpiredAt int64 `json:"expired_at,omitempty" db:"expired_at,type=INTEGER"`
 
 	// create at, unix timestamp
 	// Example: 1528894200
-	UpdateAt int64 `json:"update_at,omitempty" db:"update_at,INTEGER"`
+	UpdateAt int64 `json:"update_at,omitempty" db:"update_at,type=INTEGER"`
 }
 
 // Validate validates this token

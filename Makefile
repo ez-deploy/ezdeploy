@@ -6,7 +6,7 @@ build:
 gen_server: clean_server
 	@swagger generate server \
 		--implementation-package=${GO_MOD_NAME}/handle \
-		--principal=github.com/ez-deploy/ezdeploy/models.UserInfo \
+		--principal=github.com/ez-deploy/ezdeploy/models.AuthInfo \
 		-f ./swagger.yaml
 	@go mod tidy
 

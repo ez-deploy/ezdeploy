@@ -51,15 +51,15 @@ func NewEzDeployApiserverAPI(spec *loads.Document) *EzDeployApiserverAPI {
 		IdentityLoginHandler: identity.LoginHandlerFunc(func(params identity.LoginParams) middleware.Responder {
 			return middleware.NotImplemented("operation identity.Login has not yet been implemented")
 		}),
-		IdentityLogoutHandler: identity.LogoutHandlerFunc(func(params identity.LogoutParams, principal *models.UserInfo) middleware.Responder {
+		IdentityLogoutHandler: identity.LogoutHandlerFunc(func(params identity.LogoutParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation identity.Logout has not yet been implemented")
 		}),
-		IdentityWhoamiHandler: identity.WhoamiHandlerFunc(func(params identity.WhoamiParams, principal *models.UserInfo) middleware.Responder {
+		IdentityWhoamiHandler: identity.WhoamiHandlerFunc(func(params identity.WhoamiParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation identity.Whoami has not yet been implemented")
 		}),
 
 		// Applies when the "Cookie" header is set
-		KeyAuth: func(token string) (*models.UserInfo, error) {
+		KeyAuth: func(token string) (*models.AuthInfo, error) {
 			return nil, errors.NotImplemented("api key auth (key) Cookie from header param [Cookie] has not yet been implemented")
 		},
 		// default authorizer is authorized meaning no requests are blocked
@@ -102,7 +102,7 @@ type EzDeployApiserverAPI struct {
 
 	// KeyAuth registers a function that takes a token and returns a principal
 	// it performs authentication based on an api key Cookie provided in the header
-	KeyAuth func(string) (*models.UserInfo, error)
+	KeyAuth func(string) (*models.AuthInfo, error)
 
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer

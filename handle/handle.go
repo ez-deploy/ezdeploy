@@ -1,6 +1,13 @@
 package handle
 
-import "github.com/ez-deploy/ezdeploy/handle/user"
+import (
+	"log"
+
+	"github.com/ez-deploy/ezdeploy/handle/db"
+	"github.com/ez-deploy/ezdeploy/handle/user"
+
+	_ "github.com/go-sql-driver/mysql"
+)
 
 // handerImpl impl restapi.Handler interface.
 type handlerImpl struct {
@@ -8,9 +15,16 @@ type handlerImpl struct {
 	*user.UserOperationImpl
 }
 
+const dsn = "kratos:123456@tcp(localhost:3306)/ezdeploy?charset=utf8mb4&parseTime=True"
+
 func New() *handlerImpl {
+	tables, err := db.NewTables(dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return &handlerImpl{
 		ConfigurableImpl:  &ConfigurableImpl{},
-		UserOperationImpl: &user.UserOperationImpl{},
+		UserOperationImpl: &user.UserOperationImpl{Tables: tables},
 	}
 }

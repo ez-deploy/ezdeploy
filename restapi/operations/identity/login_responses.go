@@ -21,6 +21,10 @@ const LoginOKCode int = 200
 swagger:response loginOK
 */
 type LoginOK struct {
+	/*Set-Cookie, set token
+
+	 */
+	SetCookie string `json:"Set-Cookie"`
 
 	/*
 	  In: Body
@@ -32,6 +36,17 @@ type LoginOK struct {
 func NewLoginOK() *LoginOK {
 
 	return &LoginOK{}
+}
+
+// WithSetCookie adds the setCookie to the login o k response
+func (o *LoginOK) WithSetCookie(setCookie string) *LoginOK {
+	o.SetCookie = setCookie
+	return o
+}
+
+// SetSetCookie sets the setCookie to the login o k response
+func (o *LoginOK) SetSetCookie(setCookie string) {
+	o.SetCookie = setCookie
 }
 
 // WithPayload adds the payload to the login o k response
@@ -47,6 +62,13 @@ func (o *LoginOK) SetPayload(payload *models.UserInfo) {
 
 // WriteResponse to the client
 func (o *LoginOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	// response header Set-Cookie
+
+	setCookie := o.SetCookie
+	if setCookie != "" {
+		rw.Header().Set("Set-Cookie", setCookie)
+	}
 
 	rw.WriteHeader(200)
 	if o.Payload != nil {
@@ -69,7 +91,7 @@ type LoginUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.Error `json:"body,omitempty"`
+	Payload interface{} `json:"body,omitempty"`
 }
 
 // NewLoginUnauthorized creates LoginUnauthorized with default headers values
@@ -79,13 +101,13 @@ func NewLoginUnauthorized() *LoginUnauthorized {
 }
 
 // WithPayload adds the payload to the login unauthorized response
-func (o *LoginUnauthorized) WithPayload(payload *models.Error) *LoginUnauthorized {
+func (o *LoginUnauthorized) WithPayload(payload interface{}) *LoginUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the login unauthorized response
-func (o *LoginUnauthorized) SetPayload(payload *models.Error) {
+func (o *LoginUnauthorized) SetPayload(payload interface{}) {
 	o.Payload = payload
 }
 
@@ -93,11 +115,9 @@ func (o *LoginUnauthorized) SetPayload(payload *models.Error) {
 func (o *LoginUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(401)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
+	payload := o.Payload
+	if err := producer.Produce(rw, payload); err != nil {
+		panic(err) // let the recovery middleware deal with this
 	}
 }
 
@@ -113,7 +133,7 @@ type LoginInternalServerError struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.Error `json:"body,omitempty"`
+	Payload interface{} `json:"body,omitempty"`
 }
 
 // NewLoginInternalServerError creates LoginInternalServerError with default headers values
@@ -123,13 +143,13 @@ func NewLoginInternalServerError() *LoginInternalServerError {
 }
 
 // WithPayload adds the payload to the login internal server error response
-func (o *LoginInternalServerError) WithPayload(payload *models.Error) *LoginInternalServerError {
+func (o *LoginInternalServerError) WithPayload(payload interface{}) *LoginInternalServerError {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the login internal server error response
-func (o *LoginInternalServerError) SetPayload(payload *models.Error) {
+func (o *LoginInternalServerError) SetPayload(payload interface{}) {
 	o.Payload = payload
 }
 
@@ -137,10 +157,8 @@ func (o *LoginInternalServerError) SetPayload(payload *models.Error) {
 func (o *LoginInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(500)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
+	payload := o.Payload
+	if err := producer.Produce(rw, payload); err != nil {
+		panic(err) // let the recovery middleware deal with this
 	}
 }

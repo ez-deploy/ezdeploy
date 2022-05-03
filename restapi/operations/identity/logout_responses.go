@@ -9,8 +9,6 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
-
-	"github.com/ez-deploy/ezdeploy/models"
 )
 
 // LogoutOKCode is the HTTP code returned for type LogoutOK
@@ -49,7 +47,7 @@ type LogoutUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.Error `json:"body,omitempty"`
+	Payload interface{} `json:"body,omitempty"`
 }
 
 // NewLogoutUnauthorized creates LogoutUnauthorized with default headers values
@@ -59,13 +57,13 @@ func NewLogoutUnauthorized() *LogoutUnauthorized {
 }
 
 // WithPayload adds the payload to the logout unauthorized response
-func (o *LogoutUnauthorized) WithPayload(payload *models.Error) *LogoutUnauthorized {
+func (o *LogoutUnauthorized) WithPayload(payload interface{}) *LogoutUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the logout unauthorized response
-func (o *LogoutUnauthorized) SetPayload(payload *models.Error) {
+func (o *LogoutUnauthorized) SetPayload(payload interface{}) {
 	o.Payload = payload
 }
 
@@ -73,11 +71,9 @@ func (o *LogoutUnauthorized) SetPayload(payload *models.Error) {
 func (o *LogoutUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(401)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
+	payload := o.Payload
+	if err := producer.Produce(rw, payload); err != nil {
+		panic(err) // let the recovery middleware deal with this
 	}
 }
 
@@ -93,7 +89,7 @@ type LogoutInternalServerError struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.Error `json:"body,omitempty"`
+	Payload interface{} `json:"body,omitempty"`
 }
 
 // NewLogoutInternalServerError creates LogoutInternalServerError with default headers values
@@ -103,13 +99,13 @@ func NewLogoutInternalServerError() *LogoutInternalServerError {
 }
 
 // WithPayload adds the payload to the logout internal server error response
-func (o *LogoutInternalServerError) WithPayload(payload *models.Error) *LogoutInternalServerError {
+func (o *LogoutInternalServerError) WithPayload(payload interface{}) *LogoutInternalServerError {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the logout internal server error response
-func (o *LogoutInternalServerError) SetPayload(payload *models.Error) {
+func (o *LogoutInternalServerError) SetPayload(payload interface{}) {
 	o.Payload = payload
 }
 
@@ -117,10 +113,8 @@ func (o *LogoutInternalServerError) SetPayload(payload *models.Error) {
 func (o *LogoutInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(500)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
+	payload := o.Payload
+	if err := producer.Produce(rw, payload); err != nil {
+		panic(err) // let the recovery middleware deal with this
 	}
 }

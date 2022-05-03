@@ -53,19 +53,22 @@ func init() {
           }
         ],
         "responses": {
-          "200": {
-            "description": "Create User Success"
-          },
-          "400": {
-            "description": "Create User Failed",
+          "201": {
+            "description": "Create User Success",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "$ref": "#/responses/Created"
+            }
+          },
+          "409": {
+            "description": "Create User Failed, cause user exist",
+            "schema": {
+              "$ref": "#/responses/Conflict"
             }
           },
           "500": {
             "description": "Server Error",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "$ref": "#/responses/InternalServerError"
             }
           }
         }
@@ -94,18 +97,24 @@ func init() {
             "description": "Login Success, return user info.",
             "schema": {
               "$ref": "#/definitions/UserInfo"
+            },
+            "headers": {
+              "Set-Cookie": {
+                "type": "string",
+                "description": "Set-Cookie, set token"
+              }
             }
           },
           "401": {
             "description": "Login Failed",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "$ref": "#/responses/Unauthorized"
             }
           },
           "500": {
             "description": "Server Error",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "$ref": "#/responses/InternalServerError"
             }
           }
         }
@@ -125,13 +134,13 @@ func init() {
           "401": {
             "description": "Logout Failed, no login",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "$ref": "#/responses/Unauthorized"
             }
           },
           "500": {
             "description": "Server Error",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "$ref": "#/responses/InternalServerError"
             }
           }
         }
@@ -150,24 +159,25 @@ func init() {
             "schema": {
               "$ref": "#/definitions/UserInfo"
             }
-          },
-          "401": {
-            "description": "Get Current User's Info Failed, no login",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Server Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
           }
         }
       }
     }
   },
   "definitions": {
+    "AuthInfo": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "description": "token",
+          "$ref": "#/definitions/Token"
+        },
+        "user_info": {
+          "description": "user's info",
+          "$ref": "#/definitions/UserInfo"
+        }
+      }
+    },
     "Error": {
       "type": "object",
       "properties": {
@@ -247,6 +257,35 @@ func init() {
           "type": "string",
           "example": "foobar"
         }
+      }
+    }
+  },
+  "responses": {
+    "BadRequest": {
+      "description": "400, Request Field not valid",
+      "schema": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Conflict": {
+      "description": "409, Conflict",
+      "schema": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Created": {
+      "description": "201, Created"
+    },
+    "InternalServerError": {
+      "description": "500, Internal Server Error",
+      "schema": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Unauthorized": {
+      "description": "401, Unauthorized",
+      "schema": {
+        "$ref": "#/definitions/Error"
       }
     }
   },
@@ -299,19 +338,28 @@ func init() {
           }
         ],
         "responses": {
-          "200": {
-            "description": "Create User Success"
-          },
-          "400": {
-            "description": "Create User Failed",
+          "201": {
+            "description": "Create User Success",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "description": "201, Created"
+            }
+          },
+          "409": {
+            "description": "Create User Failed, cause user exist",
+            "schema": {
+              "description": "409, Conflict",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
             }
           },
           "500": {
             "description": "Server Error",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "description": "500, Internal Server Error",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
             }
           }
         }
@@ -340,18 +388,30 @@ func init() {
             "description": "Login Success, return user info.",
             "schema": {
               "$ref": "#/definitions/UserInfo"
+            },
+            "headers": {
+              "Set-Cookie": {
+                "type": "string",
+                "description": "Set-Cookie, set token"
+              }
             }
           },
           "401": {
             "description": "Login Failed",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "description": "401, Unauthorized",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
             }
           },
           "500": {
             "description": "Server Error",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "description": "500, Internal Server Error",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
             }
           }
         }
@@ -371,13 +431,19 @@ func init() {
           "401": {
             "description": "Logout Failed, no login",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "description": "401, Unauthorized",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
             }
           },
           "500": {
             "description": "Server Error",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "description": "500, Internal Server Error",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
             }
           }
         }
@@ -396,24 +462,25 @@ func init() {
             "schema": {
               "$ref": "#/definitions/UserInfo"
             }
-          },
-          "401": {
-            "description": "Get Current User's Info Failed, no login",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "Server Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
           }
         }
       }
     }
   },
   "definitions": {
+    "AuthInfo": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "description": "token",
+          "$ref": "#/definitions/Token"
+        },
+        "user_info": {
+          "description": "user's info",
+          "$ref": "#/definitions/UserInfo"
+        }
+      }
+    },
     "Error": {
       "type": "object",
       "properties": {
@@ -493,6 +560,35 @@ func init() {
           "type": "string",
           "example": "foobar"
         }
+      }
+    }
+  },
+  "responses": {
+    "BadRequest": {
+      "description": "400, Request Field not valid",
+      "schema": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Conflict": {
+      "description": "409, Conflict",
+      "schema": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Created": {
+      "description": "201, Created"
+    },
+    "InternalServerError": {
+      "description": "500, Internal Server Error",
+      "schema": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Unauthorized": {
+      "description": "401, Unauthorized",
+      "schema": {
+        "$ref": "#/definitions/Error"
       }
     }
   },

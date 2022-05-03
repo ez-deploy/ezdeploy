@@ -17,7 +17,7 @@ import (
 	"github.com/ez-deploy/ezdeploy/restapi/operations/identity"
 )
 
-//go:generate swagger generate server --target ../../ezdeploy --name EzDeployApiserver --spec ../swagger.yaml --implementation-package github.com/ez-deploy/ezdeploy/handle --principal github.com/ez-deploy/ezdeploy/models.UserInfo
+//go:generate swagger generate server --target ../../ezdeploy --name EzDeployApiserver --spec ../swagger.yaml --implementation-package github.com/ez-deploy/ezdeploy/handle --principal github.com/ez-deploy/ezdeploy/models.AuthInfo
 
 // This file auto configures the api backend implementation.
 // handle package must already exist.
@@ -45,7 +45,7 @@ type Configurable interface {
 // Authable handles server authentication
 type Authable interface {
 	// Applies when the "Cookie" header is set
-	KeyAuth(token string) (*models.UserInfo, error)
+	KeyAuth(token string) (*models.AuthInfo, error)
 }
 
 /* IdentityHandler  */
@@ -55,9 +55,9 @@ type IdentityHandler interface {
 	/* Login User Login */
 	Login(params identity.LoginParams) middleware.Responder
 	/* Logout Logout */
-	Logout(params identity.LogoutParams, principal *models.UserInfo) middleware.Responder
+	Logout(params identity.LogoutParams, principal *models.AuthInfo) middleware.Responder
 	/* Whoami Get Current User's Info */
-	Whoami(params identity.WhoamiParams, principal *models.UserInfo) middleware.Responder
+	Whoami(params identity.WhoamiParams, principal *models.AuthInfo) middleware.Responder
 }
 
 func configureFlags(api *operations.EzDeployApiserverAPI) {
@@ -75,7 +75,7 @@ func configureAPI(api *operations.EzDeployApiserverAPI) http.Handler {
 	api.JSONProducer = runtime.JSONProducer()
 
 	// Applies when the "Cookie" header is set
-	api.KeyAuth = func(token string) (*models.UserInfo, error) {
+	api.KeyAuth = func(token string) (*models.AuthInfo, error) {
 		return Impl.KeyAuth(token)
 	}
 
@@ -85,10 +85,10 @@ func configureAPI(api *operations.EzDeployApiserverAPI) http.Handler {
 	api.IdentityLoginHandler = identity.LoginHandlerFunc(func(params identity.LoginParams) middleware.Responder {
 		return Impl.Login(params)
 	})
-	api.IdentityLogoutHandler = identity.LogoutHandlerFunc(func(params identity.LogoutParams, principal *models.UserInfo) middleware.Responder {
+	api.IdentityLogoutHandler = identity.LogoutHandlerFunc(func(params identity.LogoutParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.Logout(params, principal)
 	})
-	api.IdentityWhoamiHandler = identity.WhoamiHandlerFunc(func(params identity.WhoamiParams, principal *models.UserInfo) middleware.Responder {
+	api.IdentityWhoamiHandler = identity.WhoamiHandlerFunc(func(params identity.WhoamiParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.Whoami(params, principal)
 	})
 

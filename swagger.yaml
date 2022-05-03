@@ -31,16 +31,18 @@ paths:
           schema:
             $ref: '#/definitions/UserInfo'
       responses:
-        "200":
+        "201":
           description: Create User Success
-        "400":
-          description: Create User Failed
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/responses/Created'
+        "409":
+          description: Create User Failed, cause user exist
+          schema:
+            $ref: '#/responses/Conflict'
         "500":
           description: Server Error
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/responses/InternalServerError'
   /user/login:
     post:
       tags:
@@ -57,16 +59,20 @@ paths:
       responses:
         "200":
           description: Login Success, return user info.
+          headers:
+            Set-Cookie:
+              type: string
+              description: Set-Cookie, set token
           schema:
             $ref: '#/definitions/UserInfo'
         "401":
           description: Login Failed
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/responses/Unauthorized'
         "500":
           description: Server Error
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/responses/InternalServerError'
   /user/logout:
     get:
       tags:
@@ -79,11 +85,11 @@ paths:
         "401":
           description: Logout Failed, no login
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/responses/Unauthorized'
         "500":
           description: Server Error
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/responses/InternalServerError'
   /whoami:
     get:
       tags:
@@ -95,14 +101,26 @@ paths:
           description: Get Current User's Info Success
           schema:
             $ref: '#/definitions/UserInfo'
-        "401":
-          description: Get Current User's Info Failed, no login
-          schema:
-            $ref: '#/definitions/Error'
-        "500":
-          description: Server Error
-          schema:
-            $ref: '#/definitions/Error'
+# Descriptions of common responses
+responses:
+  Created:
+    description: "201, Created"
+  Conflict:
+    description: "409, Conflict"
+    schema:
+      $ref: '#/definitions/Error'
+  BadRequest:
+    description: "400, Request Field not valid"
+    schema:
+      $ref: '#/definitions/Error'
+  Unauthorized:
+    description: "401, Unauthorized"
+    schema:
+      $ref: '#/definitions/Error'
+  InternalServerError:
+    description: "500, Internal Server Error"
+    schema:
+      $ref: '#/definitions/Error'
 definitions:
   UserInfo:
     type: object
@@ -166,3 +184,12 @@ definitions:
         description: 错误信息
         type: string
         example: error message
+  AuthInfo:
+    type: object
+    properties:
+      user_info:
+        description: user's info
+        $ref: '#/definitions/UserInfo'
+      token:
+        description: token
+        $ref: '#/definitions/Token'

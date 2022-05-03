@@ -14,16 +14,16 @@ import (
 )
 
 // WhoamiHandlerFunc turns a function with the right signature into a whoami handler
-type WhoamiHandlerFunc func(WhoamiParams, *models.UserInfo) middleware.Responder
+type WhoamiHandlerFunc func(WhoamiParams, *models.AuthInfo) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn WhoamiHandlerFunc) Handle(params WhoamiParams, principal *models.UserInfo) middleware.Responder {
+func (fn WhoamiHandlerFunc) Handle(params WhoamiParams, principal *models.AuthInfo) middleware.Responder {
 	return fn(params, principal)
 }
 
 // WhoamiHandler interface for that can handle valid whoami params
 type WhoamiHandler interface {
-	Handle(WhoamiParams, *models.UserInfo) middleware.Responder
+	Handle(WhoamiParams, *models.AuthInfo) middleware.Responder
 }
 
 // NewWhoami creates a new http.Handler for the whoami operation
@@ -55,9 +55,9 @@ func (o *Whoami) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if aCtx != nil {
 		*r = *aCtx
 	}
-	var principal *models.UserInfo
+	var principal *models.AuthInfo
 	if uprinc != nil {
-		principal = uprinc.(*models.UserInfo) // this is really a models.UserInfo, I promise
+		principal = uprinc.(*models.AuthInfo) // this is really a models.AuthInfo, I promise
 	}
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params

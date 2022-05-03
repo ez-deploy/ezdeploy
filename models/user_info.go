@@ -14,19 +14,19 @@ type UserInfo struct {
 
 	// id
 	// Example: 1
-	ID int64 `json:"id,omitempty" db:"id,INTEGER,PRIMARY KEY"`
+	ID int64 `json:"id,omitempty" db:"id,type=INTEGER,PRIMARY"`
 
 	// email, unique
 	// Example: foo@bar.com
-	Email string `json:"email,omitempty" db:"email,VARCHAR(255)"`
+	Email string `json:"email,omitempty" db:"email,type=VARCHAR(255)"`
 
 	// password
 	// Example: foobar123
-	Password string `json:"password,omitempty" db:"password,VARCHAR(255)"`
+	Password string `json:"password,omitempty" db:"password,type=VARCHAR(255)"`
 
 	// user's name, not unique
 	// Example: foobar
-	UserName string `json:"user_name,omitempty" db:"user_name,VARCHAR(255)"`
+	UserName string `json:"user_name,omitempty" db:"user_name,type=VARCHAR(255)"`
 }
 
 // Validate validates this user info
