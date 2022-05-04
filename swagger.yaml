@@ -4,6 +4,7 @@ produces:
   - application/json
 schemes:
   - http
+basePath: /api
 swagger: "2.0"
 info:
   description: apiserver
