@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
+
+	"github.com/ez-deploy/ezdeploy/models"
 )
 
 // CreateUserCreatedCode is the HTTP code returned for type CreateUserCreated
@@ -23,7 +25,7 @@ type CreateUserCreated struct {
 	/*
 	  In: Body
 	*/
-	Payload interface{} `json:"body,omitempty"`
+	Payload *models.Error `json:"body,omitempty"`
 }
 
 // NewCreateUserCreated creates CreateUserCreated with default headers values
@@ -33,13 +35,13 @@ func NewCreateUserCreated() *CreateUserCreated {
 }
 
 // WithPayload adds the payload to the create user created response
-func (o *CreateUserCreated) WithPayload(payload interface{}) *CreateUserCreated {
+func (o *CreateUserCreated) WithPayload(payload *models.Error) *CreateUserCreated {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create user created response
-func (o *CreateUserCreated) SetPayload(payload interface{}) {
+func (o *CreateUserCreated) SetPayload(payload *models.Error) {
 	o.Payload = payload
 }
 
@@ -47,9 +49,11 @@ func (o *CreateUserCreated) SetPayload(payload interface{}) {
 func (o *CreateUserCreated) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(201)
-	payload := o.Payload
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
 	}
 }
 
@@ -65,7 +69,7 @@ type CreateUserConflict struct {
 	/*
 	  In: Body
 	*/
-	Payload interface{} `json:"body,omitempty"`
+	Payload *models.Error `json:"body,omitempty"`
 }
 
 // NewCreateUserConflict creates CreateUserConflict with default headers values
@@ -75,13 +79,13 @@ func NewCreateUserConflict() *CreateUserConflict {
 }
 
 // WithPayload adds the payload to the create user conflict response
-func (o *CreateUserConflict) WithPayload(payload interface{}) *CreateUserConflict {
+func (o *CreateUserConflict) WithPayload(payload *models.Error) *CreateUserConflict {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create user conflict response
-func (o *CreateUserConflict) SetPayload(payload interface{}) {
+func (o *CreateUserConflict) SetPayload(payload *models.Error) {
 	o.Payload = payload
 }
 
@@ -89,9 +93,11 @@ func (o *CreateUserConflict) SetPayload(payload interface{}) {
 func (o *CreateUserConflict) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(409)
-	payload := o.Payload
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
 	}
 }
 
@@ -107,7 +113,7 @@ type CreateUserInternalServerError struct {
 	/*
 	  In: Body
 	*/
-	Payload interface{} `json:"body,omitempty"`
+	Payload *models.Error `json:"body,omitempty"`
 }
 
 // NewCreateUserInternalServerError creates CreateUserInternalServerError with default headers values
@@ -117,13 +123,13 @@ func NewCreateUserInternalServerError() *CreateUserInternalServerError {
 }
 
 // WithPayload adds the payload to the create user internal server error response
-func (o *CreateUserInternalServerError) WithPayload(payload interface{}) *CreateUserInternalServerError {
+func (o *CreateUserInternalServerError) WithPayload(payload *models.Error) *CreateUserInternalServerError {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create user internal server error response
-func (o *CreateUserInternalServerError) SetPayload(payload interface{}) {
+func (o *CreateUserInternalServerError) SetPayload(payload *models.Error) {
 	o.Payload = payload
 }
 
@@ -131,8 +137,10 @@ func (o *CreateUserInternalServerError) SetPayload(payload interface{}) {
 func (o *CreateUserInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(500)
-	payload := o.Payload
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
 	}
 }

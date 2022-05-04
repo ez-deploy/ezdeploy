@@ -34,15 +34,15 @@ paths:
         "201":
           description: Create User Success
           schema:
-            $ref: '#/responses/Created'
+            $ref: '#/definitions/Error'
         "409":
           description: Create User Failed, cause user exist
           schema:
-            $ref: '#/responses/Conflict'
+            $ref: '#/definitions/Error'
         "500":
           description: Server Error
           schema:
-            $ref: '#/responses/InternalServerError'
+            $ref: '#/definitions/Error'
   /user/login:
     post:
       tags:
@@ -68,11 +68,11 @@ paths:
         "401":
           description: Login Failed
           schema:
-            $ref: '#/responses/Unauthorized'
+            $ref: '#/definitions/Error'
         "500":
           description: Server Error
           schema:
-            $ref: '#/responses/InternalServerError'
+            $ref: '#/definitions/Error'
   /user/logout:
     get:
       tags:
@@ -85,11 +85,11 @@ paths:
         "401":
           description: Logout Failed, no login
           schema:
-            $ref: '#/responses/Unauthorized'
+            $ref: '#/definitions/Error'
         "500":
           description: Server Error
           schema:
-            $ref: '#/responses/InternalServerError'
+            $ref: '#/definitions/Error'
   /whoami:
     get:
       tags:
@@ -101,26 +101,6 @@ paths:
           description: Get Current User's Info Success
           schema:
             $ref: '#/definitions/UserInfo'
-# Descriptions of common responses
-responses:
-  Created:
-    description: "201, Created"
-  Conflict:
-    description: "409, Conflict"
-    schema:
-      $ref: '#/definitions/Error'
-  BadRequest:
-    description: "400, Request Field not valid"
-    schema:
-      $ref: '#/definitions/Error'
-  Unauthorized:
-    description: "401, Unauthorized"
-    schema:
-      $ref: '#/definitions/Error'
-  InternalServerError:
-    description: "500, Internal Server Error"
-    schema:
-      $ref: '#/definitions/Error'
 definitions:
   UserInfo:
     type: object
