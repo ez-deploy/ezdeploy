@@ -16,7 +16,7 @@ import (
 type Token struct {
 	// id
 	// Example: 1
-	ID int64 `json:"id,omitempty" db:"id,type=INTEGER,PRIMARY"`
+	ID int64 `json:"id,omitempty" db:"id,type=INTEGER,primary,auto_increment"`
 
 	// token type
 	// Enum: [session private public]

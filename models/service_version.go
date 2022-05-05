@@ -14,7 +14,7 @@ type ServiceVersion struct {
 
 	// id
 	// Example: 1
-	ID int64 `json:"id,omitempty" db:"id,type=INTEGER,PRIMARY"`
+	ID int64 `json:"id,omitempty" db:"id,type=INTEGER,primary,auto_increment"`
 
 	// version name
 	// Example: foobar

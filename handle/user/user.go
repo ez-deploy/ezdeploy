@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/mail"
 	"strings"
@@ -164,11 +165,13 @@ func (u *UserOperationImpl) isUserExist(email string) (bool, error) {
 
 // isUserInfoValid check if user info is valid.
 func isUserInfoValid(user *models.UserInfo) bool {
+	fmt.Println(user, isPasswordValid(user.Password), isNameValid(user.UserName))
 	return isEmailValid(user.Email) && isPasswordValid(user.Password) && isNameValid(user.UserName)
 }
 
 func isEmailValid(email string) bool {
 	_, err := mail.ParseAddress(email)
+	fmt.Println(email, err)
 	return err == nil
 }
 

@@ -5,11 +5,13 @@ import (
 	"github.com/ez-deploy/ezdeploy/models"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/project"
 	"github.com/go-openapi/runtime/middleware"
+	"k8s.io/client-go/kubernetes"
 )
 
 // ProjectOperationImpl impl restapi.ProjectOperation interface.
 type ProjectOperationImpl struct {
-	Tables *db.Tables
+	Tables    *db.Tables
+	ClientSet *kubernetes.Clientset
 }
 
 // CreateProject Create Project.

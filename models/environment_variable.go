@@ -14,7 +14,7 @@ type EnvironmentVariable struct {
 
 	// id
 	// Example: 1
-	ID int64 `json:"id,omitempty" db:"id,type=INTEGER,PRIMARY"`
+	ID int64 `json:"id,omitempty" db:"id,type=INTEGER,primary,auto_increment"`
 
 	// service id
 	// Example: 1
@@ -22,7 +22,7 @@ type EnvironmentVariable struct {
 
 	// environment variable name
 	// Example: foobar
-	Name string `json:"name,omitempty" db:"name,type=VARINT(255)"`
+	Name string `json:"name,omitempty" db:"name,type=VARCHAR(255)"`
 
 	// environment variable value
 	// Example: foobar
