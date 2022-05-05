@@ -21,7 +21,7 @@ type RolePermission struct {
 
 	// permission
 	// Enum: [read write delete deploy]
-	Permission string `json:"permission,omitempty" db:"permission,type=VARCHAR(20)"`
+	Permission string `json:"permission,omitempty" db:"permission,type=VARCHAR(255)"`
 
 	// AuthorityRole id
 	// Example: 1

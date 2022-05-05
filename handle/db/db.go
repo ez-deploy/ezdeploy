@@ -14,6 +14,9 @@ type Tables struct {
 	ServiceInfo         *sqlm.Table
 	ServiceVersion      *sqlm.Table
 	EnvironmentVariable *sqlm.Table
+	RoleInfo            *sqlm.Table
+	RoleMember          *sqlm.Table
+	RolePermission      *sqlm.Table
 }
 
 var (
@@ -24,6 +27,9 @@ var (
 	serviceInfoRowModel        = func() interface{} { return &models.ServiceInfo{} }
 	serviceVersionRowModel     = func() interface{} { return &models.ServiceVersion{} }
 	enviromentVariableRowModel = func() interface{} { return &models.EnvironmentVariable{} }
+	roleInfoRowModel           = func() interface{} { return &models.RoleInfo{} }
+	roleMemberRowModel         = func() interface{} { return &models.RoleMember{} }
+	rolePermissionRowModel     = func() interface{} { return &models.RolePermission{} }
 )
 
 // NewTables connect db and create Tables by dsn.
@@ -43,6 +49,9 @@ func NewTables(dsn string) (*Tables, error) {
 		ServiceInfo:         newSqlmTableWithModeler(database, "service_info", serviceInfoRowModel),
 		ServiceVersion:      newSqlmTableWithModeler(database, "service_version", serviceVersionRowModel),
 		EnvironmentVariable: newSqlmTableWithModeler(database, "enviroment_variable", enviromentVariableRowModel),
+		RoleInfo:            newSqlmTableWithModeler(database, "role_info", roleInfoRowModel),
+		RoleMember:          newSqlmTableWithModeler(database, "role_member", roleMemberRowModel),
+		RolePermission:      newSqlmTableWithModeler(database, "role_permission", rolePermissionRowModel),
 	}
 
 	return retTables, nil

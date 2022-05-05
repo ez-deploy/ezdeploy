@@ -7,18 +7,14 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// AuthorityRole Authority Role Object
+// RoleInfo Authority Role Object
 //
-// swagger:model AuthorityRole
-type AuthorityRole struct {
+// swagger:model RoleInfo
+type RoleInfo struct {
 
 	// id
 	// Example: 1
 	ID int64 `json:"id,omitempty" db:"id,type=INTEGER,primary,auto_increment"`
-
-	// user id
-	// Example: 1
-	UserID int64 `json:"user_id,omitempty" db:"user_id,type=INTEGER"`
 
 	// project id
 	// Example: 1
@@ -29,18 +25,18 @@ type AuthorityRole struct {
 	Role string `json:"role,omitempty" db:"role,type=VARCHAR(255)"`
 }
 
-// Validate validates this authority role
-func (m *AuthorityRole) Validate(formats strfmt.Registry) error {
+// Validate validates this role info
+func (m *RoleInfo) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this authority role based on context it is used
-func (m *AuthorityRole) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this role info based on context it is used
+func (m *RoleInfo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *AuthorityRole) MarshalBinary() ([]byte, error) {
+func (m *RoleInfo) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -48,8 +44,8 @@ func (m *AuthorityRole) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *AuthorityRole) UnmarshalBinary(b []byte) error {
-	var res AuthorityRole
+func (m *RoleInfo) UnmarshalBinary(b []byte) error {
+	var res RoleInfo
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

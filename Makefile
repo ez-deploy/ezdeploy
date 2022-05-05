@@ -17,7 +17,8 @@ pre_gen_server:
 	@cp ./models/project_info.go ./project_info.go.back
 	@cp ./models/service_info.go ./service_info.go.back
 	@cp ./models/service_version.go ./service_version.go.back
-	@cp ./models/authority_role.go ./authority_role.go.back
+	@cp ./models/role_info.go ./role_info.go.back
+	@cp ./models/role_member.go ./role_member.go.back
 	@cp ./models/role_permission.go ./role_permission.go.back
 
 # only used by `make gen_server`, restore some models.
@@ -28,7 +29,8 @@ post_gen_server:
 	@mv ./project_info.go.back ./models/project_info.go
 	@mv ./service_info.go.back ./models/service_info.go
 	@mv ./service_version.go.back ./models/service_version.go
-	@mv ./authority_role.go.back ./models/authority_role.go
+	@mv ./role_info.go.back ./models/role_info.go
+	@mv ./role_member.go.back ./models/role_member.go
 	@mv ./role_permission.go.back ./models/role_permission.go
 
 gen_server:

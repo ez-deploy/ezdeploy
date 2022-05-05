@@ -16,6 +16,7 @@ import (
 	"github.com/ez-deploy/ezdeploy/restapi/operations"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/identity"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/project"
+	"github.com/ez-deploy/ezdeploy/restapi/operations/r_b_a_c"
 )
 
 //go:generate swagger generate server --target ../../ezdeploy --name EzDeployApiserver --spec ../swagger.yaml --implementation-package github.com/ez-deploy/ezdeploy/handle --principal github.com/ez-deploy/ezdeploy/models.AuthInfo
@@ -32,6 +33,7 @@ type Handler interface {
 	Configurable
 	IdentityHandler
 	ProjectHandler
+	RbacHandler
 }
 
 // Configurable handles all server configurations
@@ -66,8 +68,16 @@ type IdentityHandler interface {
 type ProjectHandler interface {
 	/* CreateProject Create Project */
 	CreateProject(params project.CreateProjectParams, principal *models.AuthInfo) middleware.Responder
-	/* ListProject List All Projects */
-	ListProject(params project.ListProjectParams, principal *models.AuthInfo) middleware.Responder
+	/* GetProject Get Project */
+	GetProject(params project.GetProjectParams, principal *models.AuthInfo) middleware.Responder
+}
+
+/* RbacHandler  */
+type RbacHandler interface {
+	/* GetProjectRBAC Get Project RBAC */
+	GetProjectRBAC(params r_b_a_c.GetProjectRBACParams, principal *models.AuthInfo) middleware.Responder
+	/* GetUserRBAC Get User RBAC */
+	GetUserRBAC(params r_b_a_c.GetUserRBACParams, principal *models.AuthInfo) middleware.Responder
 }
 
 func configureFlags(api *operations.EzDeployApiserverAPI) {
@@ -95,8 +105,14 @@ func configureAPI(api *operations.EzDeployApiserverAPI) http.Handler {
 	api.IdentityCreateUserHandler = identity.CreateUserHandlerFunc(func(params identity.CreateUserParams) middleware.Responder {
 		return Impl.CreateUser(params)
 	})
-	api.ProjectListProjectHandler = project.ListProjectHandlerFunc(func(params project.ListProjectParams, principal *models.AuthInfo) middleware.Responder {
-		return Impl.ListProject(params, principal)
+	api.ProjectGetProjectHandler = project.GetProjectHandlerFunc(func(params project.GetProjectParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.GetProject(params, principal)
+	})
+	api.RbacGetProjectRBACHandler = r_b_a_c.GetProjectRBACHandlerFunc(func(params r_b_a_c.GetProjectRBACParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.GetProjectRBAC(params, principal)
+	})
+	api.RbacGetUserRBACHandler = r_b_a_c.GetUserRBACHandlerFunc(func(params r_b_a_c.GetUserRBACParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.GetUserRBAC(params, principal)
 	})
 	api.IdentityLoginHandler = identity.LoginHandlerFunc(func(params identity.LoginParams) middleware.Responder {
 		return Impl.Login(params)

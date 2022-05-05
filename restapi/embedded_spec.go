@@ -73,21 +73,108 @@ func init() {
         }
       }
     },
-    "/project/list": {
+    "/project/get": {
       "get": {
-        "description": "List All Projects",
+        "description": "Get Project",
         "tags": [
           "Project"
         ],
-        "operationId": "ListProject",
+        "operationId": "GetProject",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "List All Projects Success, return project info. (project name, project id, project description)",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/ProjectInfo"
-              }
+              "$ref": "#/definitions/ProjectInfo"
+            }
+          },
+          "404": {
+            "description": "Get Project Failed, cause project not exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/rbac/project/get": {
+      "get": {
+        "description": "Get Project RBAC",
+        "tags": [
+          "RBAC"
+        ],
+        "operationId": "GetProjectRBAC",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "projectID",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List All Projects RBAC Success, return project RBAC info.",
+            "schema": {
+              "$ref": "#/definitions/ProjectRole"
+            }
+          },
+          "404": {
+            "description": "Get Project RBAC Failed, cause project not exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/rbac/user/get": {
+      "get": {
+        "description": "Get User RBAC",
+        "tags": [
+          "RBAC"
+        ],
+        "operationId": "GetUserRBAC",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "userID",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List All Users RBAC Success, return user RBAC info.",
+            "schema": {
+              "$ref": "#/definitions/UserRole"
+            }
+          },
+          "404": {
+            "description": "Get User RBAC Failed, cause user not exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           },
           "500": {
@@ -243,32 +330,6 @@ func init() {
         }
       }
     },
-    "AuthorityRole": {
-      "description": "Authority Role Object",
-      "type": "object",
-      "properties": {
-        "id": {
-          "description": "id",
-          "type": "integer",
-          "example": 1
-        },
-        "project_id": {
-          "description": "project id",
-          "type": "integer",
-          "example": 1
-        },
-        "role": {
-          "description": "role",
-          "type": "string",
-          "example": "admin"
-        },
-        "user_id": {
-          "description": "user id",
-          "type": "integer",
-          "example": 1
-        }
-      }
-    },
     "EnvironmentVariable": {
       "description": "Environment Variable for service deploy",
       "type": "object",
@@ -341,6 +402,66 @@ func init() {
         }
       }
     },
+    "ProjectRole": {
+      "description": "Project Role Object",
+      "type": "object",
+      "properties": {
+        "project_id": {
+          "description": "project_id",
+          "type": "integer",
+          "example": 1
+        },
+        "roles": {
+          "description": "roles",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoleView"
+          }
+        }
+      }
+    },
+    "RoleInfo": {
+      "description": "Authority Role Object",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "project_id": {
+          "description": "project id",
+          "type": "integer",
+          "example": 1
+        },
+        "role": {
+          "description": "role",
+          "type": "string",
+          "example": "admin"
+        }
+      }
+    },
+    "RoleMember": {
+      "description": "Authority Role Member Object",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "role_id": {
+          "description": "role id",
+          "type": "integer",
+          "example": 1
+        },
+        "user_id": {
+          "description": "user id",
+          "type": "integer",
+          "example": 1
+        }
+      }
+    },
     "RolePermission": {
       "description": "Role Permissions Object",
       "type": "object",
@@ -364,6 +485,29 @@ func init() {
           "description": "AuthorityRole id",
           "type": "integer",
           "example": 1
+        }
+      }
+    },
+    "RoleView": {
+      "description": "Authority Role View Object",
+      "type": "object",
+      "properties": {
+        "info": {
+          "$ref": "#/definitions/RoleInfo"
+        },
+        "members": {
+          "description": "members",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoleMember"
+          }
+        },
+        "permissions": {
+          "description": "permissions",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RolePermission"
+          }
         }
       }
     },
@@ -522,6 +666,24 @@ func init() {
           "description": "user's name, not unique",
           "type": "string",
           "example": "foobar"
+        }
+      }
+    },
+    "UserRole": {
+      "description": "User Role Object",
+      "type": "object",
+      "properties": {
+        "roles": {
+          "description": "roles",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoleView"
+          }
+        },
+        "user_id": {
+          "description": "user_id",
+          "type": "integer",
+          "example": 1
         }
       }
     }
@@ -595,21 +757,108 @@ func init() {
         }
       }
     },
-    "/project/list": {
+    "/project/get": {
       "get": {
-        "description": "List All Projects",
+        "description": "Get Project",
         "tags": [
           "Project"
         ],
-        "operationId": "ListProject",
+        "operationId": "GetProject",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "List All Projects Success, return project info. (project name, project id, project description)",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/ProjectInfo"
-              }
+              "$ref": "#/definitions/ProjectInfo"
+            }
+          },
+          "404": {
+            "description": "Get Project Failed, cause project not exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/rbac/project/get": {
+      "get": {
+        "description": "Get Project RBAC",
+        "tags": [
+          "RBAC"
+        ],
+        "operationId": "GetProjectRBAC",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "projectID",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List All Projects RBAC Success, return project RBAC info.",
+            "schema": {
+              "$ref": "#/definitions/ProjectRole"
+            }
+          },
+          "404": {
+            "description": "Get Project RBAC Failed, cause project not exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/rbac/user/get": {
+      "get": {
+        "description": "Get User RBAC",
+        "tags": [
+          "RBAC"
+        ],
+        "operationId": "GetUserRBAC",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "userID",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List All Users RBAC Success, return user RBAC info.",
+            "schema": {
+              "$ref": "#/definitions/UserRole"
+            }
+          },
+          "404": {
+            "description": "Get User RBAC Failed, cause user not exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           },
           "500": {
@@ -765,32 +1014,6 @@ func init() {
         }
       }
     },
-    "AuthorityRole": {
-      "description": "Authority Role Object",
-      "type": "object",
-      "properties": {
-        "id": {
-          "description": "id",
-          "type": "integer",
-          "example": 1
-        },
-        "project_id": {
-          "description": "project id",
-          "type": "integer",
-          "example": 1
-        },
-        "role": {
-          "description": "role",
-          "type": "string",
-          "example": "admin"
-        },
-        "user_id": {
-          "description": "user id",
-          "type": "integer",
-          "example": 1
-        }
-      }
-    },
     "EnvironmentVariable": {
       "description": "Environment Variable for service deploy",
       "type": "object",
@@ -863,6 +1086,66 @@ func init() {
         }
       }
     },
+    "ProjectRole": {
+      "description": "Project Role Object",
+      "type": "object",
+      "properties": {
+        "project_id": {
+          "description": "project_id",
+          "type": "integer",
+          "example": 1
+        },
+        "roles": {
+          "description": "roles",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoleView"
+          }
+        }
+      }
+    },
+    "RoleInfo": {
+      "description": "Authority Role Object",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "project_id": {
+          "description": "project id",
+          "type": "integer",
+          "example": 1
+        },
+        "role": {
+          "description": "role",
+          "type": "string",
+          "example": "admin"
+        }
+      }
+    },
+    "RoleMember": {
+      "description": "Authority Role Member Object",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "role_id": {
+          "description": "role id",
+          "type": "integer",
+          "example": 1
+        },
+        "user_id": {
+          "description": "user id",
+          "type": "integer",
+          "example": 1
+        }
+      }
+    },
     "RolePermission": {
       "description": "Role Permissions Object",
       "type": "object",
@@ -886,6 +1169,29 @@ func init() {
           "description": "AuthorityRole id",
           "type": "integer",
           "example": 1
+        }
+      }
+    },
+    "RoleView": {
+      "description": "Authority Role View Object",
+      "type": "object",
+      "properties": {
+        "info": {
+          "$ref": "#/definitions/RoleInfo"
+        },
+        "members": {
+          "description": "members",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoleMember"
+          }
+        },
+        "permissions": {
+          "description": "permissions",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RolePermission"
+          }
         }
       }
     },
@@ -1044,6 +1350,24 @@ func init() {
           "description": "user's name, not unique",
           "type": "string",
           "example": "foobar"
+        }
+      }
+    },
+    "UserRole": {
+      "description": "User Role Object",
+      "type": "object",
+      "properties": {
+        "roles": {
+          "description": "roles",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoleView"
+          }
+        },
+        "user_id": {
+          "description": "user_id",
+          "type": "integer",
+          "example": 1
         }
       }
     }

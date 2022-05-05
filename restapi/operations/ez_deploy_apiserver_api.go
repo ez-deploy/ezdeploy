@@ -22,6 +22,7 @@ import (
 	"github.com/ez-deploy/ezdeploy/models"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/identity"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/project"
+	"github.com/ez-deploy/ezdeploy/restapi/operations/r_b_a_c"
 )
 
 // NewEzDeployApiserverAPI creates a new EzDeployApiserver instance
@@ -52,8 +53,14 @@ func NewEzDeployApiserverAPI(spec *loads.Document) *EzDeployApiserverAPI {
 		IdentityCreateUserHandler: identity.CreateUserHandlerFunc(func(params identity.CreateUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation identity.CreateUser has not yet been implemented")
 		}),
-		ProjectListProjectHandler: project.ListProjectHandlerFunc(func(params project.ListProjectParams, principal *models.AuthInfo) middleware.Responder {
-			return middleware.NotImplemented("operation project.ListProject has not yet been implemented")
+		ProjectGetProjectHandler: project.GetProjectHandlerFunc(func(params project.GetProjectParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation project.GetProject has not yet been implemented")
+		}),
+		RbacGetProjectRBACHandler: r_b_a_c.GetProjectRBACHandlerFunc(func(params r_b_a_c.GetProjectRBACParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation r_b_a_c.GetProjectRBAC has not yet been implemented")
+		}),
+		RbacGetUserRBACHandler: r_b_a_c.GetUserRBACHandlerFunc(func(params r_b_a_c.GetUserRBACParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation r_b_a_c.GetUserRBAC has not yet been implemented")
 		}),
 		IdentityLoginHandler: identity.LoginHandlerFunc(func(params identity.LoginParams) middleware.Responder {
 			return middleware.NotImplemented("operation identity.Login has not yet been implemented")
@@ -118,8 +125,12 @@ type EzDeployApiserverAPI struct {
 	ProjectCreateProjectHandler project.CreateProjectHandler
 	// IdentityCreateUserHandler sets the operation handler for the create user operation
 	IdentityCreateUserHandler identity.CreateUserHandler
-	// ProjectListProjectHandler sets the operation handler for the list project operation
-	ProjectListProjectHandler project.ListProjectHandler
+	// ProjectGetProjectHandler sets the operation handler for the get project operation
+	ProjectGetProjectHandler project.GetProjectHandler
+	// RbacGetProjectRBACHandler sets the operation handler for the get project r b a c operation
+	RbacGetProjectRBACHandler r_b_a_c.GetProjectRBACHandler
+	// RbacGetUserRBACHandler sets the operation handler for the get user r b a c operation
+	RbacGetUserRBACHandler r_b_a_c.GetUserRBACHandler
 	// IdentityLoginHandler sets the operation handler for the login operation
 	IdentityLoginHandler identity.LoginHandler
 	// IdentityLogoutHandler sets the operation handler for the logout operation
@@ -213,8 +224,14 @@ func (o *EzDeployApiserverAPI) Validate() error {
 	if o.IdentityCreateUserHandler == nil {
 		unregistered = append(unregistered, "identity.CreateUserHandler")
 	}
-	if o.ProjectListProjectHandler == nil {
-		unregistered = append(unregistered, "project.ListProjectHandler")
+	if o.ProjectGetProjectHandler == nil {
+		unregistered = append(unregistered, "project.GetProjectHandler")
+	}
+	if o.RbacGetProjectRBACHandler == nil {
+		unregistered = append(unregistered, "r_b_a_c.GetProjectRBACHandler")
+	}
+	if o.RbacGetUserRBACHandler == nil {
+		unregistered = append(unregistered, "r_b_a_c.GetUserRBACHandler")
 	}
 	if o.IdentityLoginHandler == nil {
 		unregistered = append(unregistered, "identity.LoginHandler")
@@ -335,7 +352,15 @@ func (o *EzDeployApiserverAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/project/list"] = project.NewListProject(o.context, o.ProjectListProjectHandler)
+	o.handlers["GET"]["/project/get"] = project.NewGetProject(o.context, o.ProjectGetProjectHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/rbac/project/get"] = r_b_a_c.NewGetProjectRBAC(o.context, o.RbacGetProjectRBACHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/rbac/user/get"] = r_b_a_c.NewGetUserRBAC(o.context, o.RbacGetUserRBACHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
