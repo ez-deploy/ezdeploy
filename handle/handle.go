@@ -56,6 +56,7 @@ func New() *handlerImpl {
 			ServiceVersionManager: &service.ServiceVersionManager{
 				Tables: tables,
 			},
+			K8SManager: k8sClientSet,
 		},
 	}
 }

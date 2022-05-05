@@ -16,7 +16,7 @@ type ServiceVersionManager struct {
 
 /* CreateServiceVersion Create Service Version */
 func (s *ServiceVersionManager) CreateServiceVersion(params serviceop.CreateServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
-	allowed, err := s.checkPermissionOnService(principal.UserInfo.ID, params.Body.ID, models.RolePermissionPermissionWrite)
+	allowed, err := s.checkPermissionOnService(principal.UserInfo.ID, params.Body.ServiceID, models.RolePermissionPermissionWrite)
 	if err != nil {
 		errBody := newError("get permission info failed", err.Error())
 		return serviceop.NewCreateServiceVersionInternalServerError().WithPayload(errBody)

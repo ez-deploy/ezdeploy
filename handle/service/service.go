@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"time"
 
@@ -24,7 +25,90 @@ type ServiceOperationImpl struct {
 // UpdateServiceVersion Update Service Version
 // You Can Call this api to re deploy/ expose this service.
 func (s *ServiceOperationImpl) UpdateServiceVersion(params serviceop.UpdateServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
-	return middleware.NotImplemented("not impl")
+	// check permission.
+	svc, err := s.getServiceByID(params.Body.ID)
+	if err != nil {
+		errBody := newError("get service failed", err.Error())
+		return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+	}
+
+	// Stop And Delete Service First.
+	allowed, err := newRBACManager(s.Tables).Check(principal.UserInfo.ID, svc.ProjectID, models.RolePermissionPermissionDelete)
+	if err != nil {
+		errBody := newError("get permission info failed", err.Error())
+		return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+	}
+	if !allowed {
+		errBody := newError("permission denied")
+		return serviceop.NewUpdateServiceVersionForbidden().WithPayload(errBody)
+	}
+
+	// get project info.
+	project, err := s.getProjectByServiceInfo(svc)
+	if err != nil {
+		errBody := newError("get project info by projectID failed", err.Error())
+		return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+	}
+	// get service version info.
+	svcVersion, err := s.getServiceVersionByID(params.Body.ID, params.Body.VersionID)
+	if err != nil {
+		errBody := newError("get service version info failed", err.Error())
+		return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+	}
+
+	// Set Service Info.
+	if params.Body.ExposeType == models.ServiceInfoExposeTypeNone {
+		// Do Not Expose Service In K8S.
+		err := s.K8SManager.DeleteService(params.HTTPRequest.Context(), project.Name, params.Body.Name)
+		if err != nil && !errors.Is(err, k8s.ERRServiceNotFound) {
+			errBody := newError("delete service failed", err.Error())
+			return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+		}
+	} else {
+		// Expose Service In K8S.
+		fmt.Println(project.Name, params.Body, svcVersion)
+		err := s.K8SManager.SetService(context.Background(), project.Name, params.Body, svcVersion)
+		if err != nil {
+			errBody := newError("set service failed", err.Error())
+			return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+		}
+	}
+
+	// Set Deployment Info.
+	if !params.Body.Running {
+		// Delete Deployment.
+		err := s.K8SManager.DeleteDeployment(params.HTTPRequest.Context(), project.Name, params.Body.Name)
+		if err != nil && !errors.Is(err, k8s.ERRDeploymentNotFound) {
+			errBody := newError("delete deployment failed", err.Error())
+			return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+		}
+	} else {
+		// Create Deployment.
+		err := s.K8SManager.SetDeployment(params.HTTPRequest.Context(), project.Name, params.Body, svcVersion)
+		if err != nil {
+			errBody := newError("set deployment failed", err.Error())
+			return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+		}
+	}
+
+	// Write Result Into DB.
+	selector := sqlm.SelectorFilter{"id": params.Body.ID}
+	updateFields := map[string]interface{}{
+		"running":         params.Body.Running,
+		"version_id":      params.Body.VersionID,
+		"replica":         params.Body.Replica,
+		"expose_type":     params.Body.ExposeType,
+		"in_cluster_port": params.Body.InClusterPort,
+		"node_port":       params.Body.NodePort,
+		"update_at":       time.Now().Unix(),
+	}
+
+	if err := s.Tables.ServiceInfo.Update(selector, updateFields); err != nil {
+		errBody := newError("update service failed", err.Error())
+		return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+	}
+
+	return serviceop.NewUpdateServiceVersionOK().WithPayload(params.Body)
 }
 
 // CreateService Create Service.
@@ -212,6 +296,15 @@ func (s *ServiceOperationImpl) getProjectByServiceInfo(svc *models.ServiceInfo) 
 		return nil, err
 	}
 	return retProject, nil
+}
+
+func (s *ServiceOperationImpl) getServiceVersionByID(serviceID, serviceVersionID int64) (*models.ServiceVersion, error) {
+	retServiceVersion := &models.ServiceVersion{}
+	err := s.Tables.ServiceVersion.Get(sqlm.SelectorFilter{"id": serviceVersionID, "service_id": serviceID}, retServiceVersion)
+	if err != nil {
+		return nil, err
+	}
+	return retServiceVersion, nil
 }
 
 func (s *ServiceOperationImpl) getServiceByID(serviceID int64) (*models.ServiceInfo, error) {

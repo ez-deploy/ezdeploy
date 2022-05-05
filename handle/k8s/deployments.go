@@ -3,6 +3,7 @@ package k8s
 import (
 	"context"
 	"fmt"
+	"math/rand"
 
 	"github.com/ez-deploy/ezdeploy/models"
 	appsv1 "k8s.io/api/apps/v1"
@@ -10,6 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/util/retry"
 )
 
 const selectorName = "app-name"
@@ -73,16 +75,24 @@ func (m *DeploymentManager) updateDeployment(
 	service *models.ServiceInfo,
 	versionInfo *models.ServiceVersion,
 ) error {
+	// update service in k8s.
 	deploymentsClient := m.ClientSet.AppsV1().Deployments(namespace)
+	expectConfig := buildDeploymentConfigFromServiceInfo(service, versionInfo)
 
-	deploymentconfig := buildDeploymentConfigFromServiceInfo(service, versionInfo)
-	_, err := deploymentsClient.Update(ctx, deploymentconfig, metav1.UpdateOptions{})
+	retryErr := retry.RetryOnConflict(retry.DefaultRetry, func() error {
+		result, getErr := deploymentsClient.Get(ctx, service.Name, metav1.GetOptions{})
+		if getErr != nil {
+			return fmt.Errorf("failed to get latest version of Service: %v", getErr)
+		}
 
-	if errors.IsNotFound(err) {
-		return ERRDeploymentNotFound
-	}
+		result.Spec.Replicas = expectConfig.Spec.Replicas
+		result.Spec.Template = expectConfig.Spec.Template
 
-	return err
+		_, updateErr := deploymentsClient.Update(ctx, result, metav1.UpdateOptions{})
+		return updateErr
+	})
+
+	return retryErr
 }
 
 // DeleteDeployment delete deployment.
@@ -109,7 +119,8 @@ func buildDeploymentConfigFromServiceInfo(
 
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: name,
+			Name:            name,
+			ResourceVersion: fmt.Sprint(rand.Uint64()),
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: &replica,

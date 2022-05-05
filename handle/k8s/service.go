@@ -3,6 +3,7 @@ package k8s
 import (
 	"context"
 	"fmt"
+	"math/rand"
 
 	"github.com/ez-deploy/ezdeploy/models"
 	apiv1 "k8s.io/api/core/v1"
@@ -10,6 +11,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/util/retry"
 )
 
 var (
@@ -34,6 +36,8 @@ func (m *ServiceManager) SetService(
 	if err != nil && !errors.IsNotFound(err) {
 		return err
 	}
+
+	fmt.Println("get service ok, is not found = ", errors.IsNotFound(err))
 
 	// create service if not exist.
 	if errors.IsNotFound(err) {
@@ -78,14 +82,22 @@ func (m *ServiceManager) updateService(
 ) error {
 	// update service in k8s.
 	servicesClient := m.ClientSet.CoreV1().Services(namespace)
-	svc := buildServiceConfigFromServiceInfo(service, versionInfo)
+	expectConfig := buildServiceConfigFromServiceInfo(service, versionInfo)
 
-	_, err := servicesClient.Update(ctx, svc, metav1.UpdateOptions{})
-	if errors.IsNotFound(err) {
-		return ERRNamespaceNotExist
-	}
+	retryErr := retry.RetryOnConflict(retry.DefaultRetry, func() error {
+		result, getErr := servicesClient.Get(ctx, service.Name, metav1.GetOptions{})
+		if getErr != nil {
+			return fmt.Errorf("failed to get latest version of Service: %v", getErr)
+		}
 
-	return err
+		result.Spec.Type = expectConfig.Spec.Type
+		result.Spec.Ports = expectConfig.Spec.Ports
+
+		_, updateErr := servicesClient.Update(ctx, result, metav1.UpdateOptions{})
+		return updateErr
+	})
+
+	return retryErr
 }
 
 func buildServiceConfigFromServiceInfo(
@@ -112,6 +124,7 @@ func buildServiceConfigFromServiceInfo(
 			Labels: map[string]string{
 				selectorName: name,
 			},
+			ResourceVersion: fmt.Sprint(rand.Uint64()),
 		},
 		Spec: apiv1.ServiceSpec{
 			Selector: map[string]string{
