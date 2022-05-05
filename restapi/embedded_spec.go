@@ -243,6 +243,32 @@ func init() {
         }
       }
     },
+    "AuthorityRole": {
+      "description": "Authority Role Object",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "project_id": {
+          "description": "project id",
+          "type": "integer",
+          "example": 1
+        },
+        "role": {
+          "description": "role",
+          "type": "string",
+          "example": "admin"
+        },
+        "user_id": {
+          "description": "user id",
+          "type": "integer",
+          "example": 1
+        }
+      }
+    },
     "EnvironmentVariable": {
       "description": "Environment Variable for service deploy",
       "type": "object",
@@ -303,10 +329,41 @@ func init() {
           "type": "string",
           "example": "foobar"
         },
+        "owner_id": {
+          "description": "owner's user_id",
+          "type": "integer",
+          "example": 1
+        },
         "update_at": {
           "description": "update at, unix timestamp",
           "type": "integer",
           "example": 1528894200
+        }
+      }
+    },
+    "RolePermission": {
+      "description": "Role Permissions Object",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "permission": {
+          "description": "permission",
+          "type": "string",
+          "enum": [
+            "read",
+            "write",
+            "delete",
+            "deploy"
+          ]
+        },
+        "role_id": {
+          "description": "AuthorityRole id",
+          "type": "integer",
+          "example": 1
         }
       }
     },
@@ -708,6 +765,32 @@ func init() {
         }
       }
     },
+    "AuthorityRole": {
+      "description": "Authority Role Object",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "project_id": {
+          "description": "project id",
+          "type": "integer",
+          "example": 1
+        },
+        "role": {
+          "description": "role",
+          "type": "string",
+          "example": "admin"
+        },
+        "user_id": {
+          "description": "user id",
+          "type": "integer",
+          "example": 1
+        }
+      }
+    },
     "EnvironmentVariable": {
       "description": "Environment Variable for service deploy",
       "type": "object",
@@ -768,10 +851,41 @@ func init() {
           "type": "string",
           "example": "foobar"
         },
+        "owner_id": {
+          "description": "owner's user_id",
+          "type": "integer",
+          "example": 1
+        },
         "update_at": {
           "description": "update at, unix timestamp",
           "type": "integer",
           "example": 1528894200
+        }
+      }
+    },
+    "RolePermission": {
+      "description": "Role Permissions Object",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "permission": {
+          "description": "permission",
+          "type": "string",
+          "enum": [
+            "read",
+            "write",
+            "delete",
+            "deploy"
+          ]
+        },
+        "role_id": {
+          "description": "AuthorityRole id",
+          "type": "integer",
+          "example": 1
         }
       }
     },

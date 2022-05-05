@@ -16,6 +16,10 @@ type ProjectInfo struct {
 	// Example: 1
 	ID int64 `json:"id,omitempty" db:"id,type=INTEGER,primary,auto_increment"`
 
+	// owner_id
+	// Example: 1
+	OwnerID int64 `json:"owner_id,omitempty" db:"owner_id,type=INTEGER"`
+
 	// project name
 	// Example: foobar
 	Name string `json:"name,omitempty" db:"name,type=VARCHAR(255)"`
