@@ -34,6 +34,71 @@ func init() {
     "version": "1.0.0"
   },
   "paths": {
+    "/project/create": {
+      "post": {
+        "description": "Create Project",
+        "tags": [
+          "Project"
+        ],
+        "operationId": "CreateProject",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProjectInfo"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create Project Success, return project info.",
+            "schema": {
+              "$ref": "#/definitions/ProjectInfo"
+            }
+          },
+          "409": {
+            "description": "Create Project Failed, cause project exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/project/list": {
+      "get": {
+        "description": "List All Projects",
+        "tags": [
+          "Project"
+        ],
+        "operationId": "ListProject",
+        "responses": {
+          "200": {
+            "description": "List All Projects Success, return project info. (project name, project id, project description)",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ProjectInfo"
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/user/create": {
       "post": {
         "security": [],
@@ -178,6 +243,32 @@ func init() {
         }
       }
     },
+    "EnvironmentVariable": {
+      "description": "Environment Variable for service deploy",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "name": {
+          "description": "environment variable name",
+          "type": "string",
+          "example": "foobar"
+        },
+        "service_id": {
+          "description": "service id",
+          "type": "integer",
+          "example": 1
+        },
+        "value": {
+          "description": "environment variable value",
+          "type": "string",
+          "example": "foobar"
+        }
+      }
+    },
     "Error": {
       "type": "object",
       "properties": {
@@ -185,6 +276,124 @@ func init() {
           "description": "错误信息",
           "type": "string",
           "example": "error message"
+        }
+      }
+    },
+    "ProjectInfo": {
+      "description": "Project Object",
+      "type": "object",
+      "properties": {
+        "create_at": {
+          "description": "create at, unix timestamp",
+          "type": "integer",
+          "example": 1528894200
+        },
+        "description": {
+          "description": "project description",
+          "type": "string",
+          "example": "foobar project"
+        },
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "name": {
+          "description": "project name",
+          "type": "string",
+          "example": "foobar"
+        },
+        "update_at": {
+          "description": "update at, unix timestamp",
+          "type": "integer",
+          "example": 1528894200
+        }
+      }
+    },
+    "ServiceInfo": {
+      "description": "Service Object",
+      "type": "object",
+      "properties": {
+        "create_at": {
+          "description": "create at, unix timestamp",
+          "type": "integer",
+          "example": 1528894200
+        },
+        "description": {
+          "description": "service description",
+          "type": "string",
+          "example": "foobar service"
+        },
+        "expose_port": {
+          "description": "expose port",
+          "type": "integer",
+          "example": 80
+        },
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "name": {
+          "description": "service name",
+          "type": "string",
+          "example": "foobar"
+        },
+        "project_id": {
+          "description": "project id",
+          "type": "integer",
+          "example": 1
+        },
+        "replica": {
+          "description": "number of pod replicas",
+          "type": "integer",
+          "example": 1
+        },
+        "update_at": {
+          "description": "update at, unix timestamp",
+          "type": "integer",
+          "example": 1528894200
+        },
+        "version_id": {
+          "description": "version id",
+          "type": "integer",
+          "example": 1
+        }
+      }
+    },
+    "ServiceVersion": {
+      "description": "Service Version Object",
+      "type": "object",
+      "properties": {
+        "create_at": {
+          "description": "create at, unix timestamp",
+          "type": "integer",
+          "example": 1528894200
+        },
+        "description": {
+          "description": "version description",
+          "type": "string",
+          "example": "foobar version"
+        },
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "image": {
+          "description": "image name",
+          "type": "string",
+          "example": "busybox:latest"
+        },
+        "name": {
+          "description": "version name",
+          "type": "string",
+          "example": "foobar"
+        },
+        "service_id": {
+          "description": "service id",
+          "type": "integer",
+          "example": 1
         }
       }
     },
@@ -290,6 +499,71 @@ func init() {
     "version": "1.0.0"
   },
   "paths": {
+    "/project/create": {
+      "post": {
+        "description": "Create Project",
+        "tags": [
+          "Project"
+        ],
+        "operationId": "CreateProject",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProjectInfo"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create Project Success, return project info.",
+            "schema": {
+              "$ref": "#/definitions/ProjectInfo"
+            }
+          },
+          "409": {
+            "description": "Create Project Failed, cause project exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/project/list": {
+      "get": {
+        "description": "List All Projects",
+        "tags": [
+          "Project"
+        ],
+        "operationId": "ListProject",
+        "responses": {
+          "200": {
+            "description": "List All Projects Success, return project info. (project name, project id, project description)",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ProjectInfo"
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/user/create": {
       "post": {
         "security": [],
@@ -434,6 +708,32 @@ func init() {
         }
       }
     },
+    "EnvironmentVariable": {
+      "description": "Environment Variable for service deploy",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "name": {
+          "description": "environment variable name",
+          "type": "string",
+          "example": "foobar"
+        },
+        "service_id": {
+          "description": "service id",
+          "type": "integer",
+          "example": 1
+        },
+        "value": {
+          "description": "environment variable value",
+          "type": "string",
+          "example": "foobar"
+        }
+      }
+    },
     "Error": {
       "type": "object",
       "properties": {
@@ -441,6 +741,124 @@ func init() {
           "description": "错误信息",
           "type": "string",
           "example": "error message"
+        }
+      }
+    },
+    "ProjectInfo": {
+      "description": "Project Object",
+      "type": "object",
+      "properties": {
+        "create_at": {
+          "description": "create at, unix timestamp",
+          "type": "integer",
+          "example": 1528894200
+        },
+        "description": {
+          "description": "project description",
+          "type": "string",
+          "example": "foobar project"
+        },
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "name": {
+          "description": "project name",
+          "type": "string",
+          "example": "foobar"
+        },
+        "update_at": {
+          "description": "update at, unix timestamp",
+          "type": "integer",
+          "example": 1528894200
+        }
+      }
+    },
+    "ServiceInfo": {
+      "description": "Service Object",
+      "type": "object",
+      "properties": {
+        "create_at": {
+          "description": "create at, unix timestamp",
+          "type": "integer",
+          "example": 1528894200
+        },
+        "description": {
+          "description": "service description",
+          "type": "string",
+          "example": "foobar service"
+        },
+        "expose_port": {
+          "description": "expose port",
+          "type": "integer",
+          "example": 80
+        },
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "name": {
+          "description": "service name",
+          "type": "string",
+          "example": "foobar"
+        },
+        "project_id": {
+          "description": "project id",
+          "type": "integer",
+          "example": 1
+        },
+        "replica": {
+          "description": "number of pod replicas",
+          "type": "integer",
+          "example": 1
+        },
+        "update_at": {
+          "description": "update at, unix timestamp",
+          "type": "integer",
+          "example": 1528894200
+        },
+        "version_id": {
+          "description": "version id",
+          "type": "integer",
+          "example": 1
+        }
+      }
+    },
+    "ServiceVersion": {
+      "description": "Service Version Object",
+      "type": "object",
+      "properties": {
+        "create_at": {
+          "description": "create at, unix timestamp",
+          "type": "integer",
+          "example": 1528894200
+        },
+        "description": {
+          "description": "version description",
+          "type": "string",
+          "example": "foobar version"
+        },
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "image": {
+          "description": "image name",
+          "type": "string",
+          "example": "busybox:latest"
+        },
+        "name": {
+          "description": "version name",
+          "type": "string",
+          "example": "foobar"
+        },
+        "service_id": {
+          "description": "service id",
+          "type": "integer",
+          "example": 1
         }
       }
     },

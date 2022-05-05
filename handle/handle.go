@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/ez-deploy/ezdeploy/handle/db"
+	"github.com/ez-deploy/ezdeploy/handle/project"
 	"github.com/ez-deploy/ezdeploy/handle/user"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -13,6 +14,7 @@ import (
 type handlerImpl struct {
 	*ConfigurableImpl
 	*user.UserOperationImpl
+	*project.ProjectOperationImpl
 }
 
 const dsn = "kratos:123456@tcp(localhost:3306)/ezdeploy?charset=utf8mb4&parseTime=True"
@@ -24,7 +26,8 @@ func New() *handlerImpl {
 	}
 
 	return &handlerImpl{
-		ConfigurableImpl:  &ConfigurableImpl{},
-		UserOperationImpl: &user.UserOperationImpl{Tables: tables},
+		ConfigurableImpl:     &ConfigurableImpl{},
+		UserOperationImpl:    &user.UserOperationImpl{Tables: tables},
+		ProjectOperationImpl: &project.ProjectOperationImpl{Tables: tables},
 	}
 }

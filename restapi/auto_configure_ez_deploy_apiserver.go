@@ -15,6 +15,7 @@ import (
 	"github.com/ez-deploy/ezdeploy/models"
 	"github.com/ez-deploy/ezdeploy/restapi/operations"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/identity"
+	"github.com/ez-deploy/ezdeploy/restapi/operations/project"
 )
 
 //go:generate swagger generate server --target ../../ezdeploy --name EzDeployApiserver --spec ../swagger.yaml --implementation-package github.com/ez-deploy/ezdeploy/handle --principal github.com/ez-deploy/ezdeploy/models.AuthInfo
@@ -30,6 +31,7 @@ type Handler interface {
 	Authable
 	Configurable
 	IdentityHandler
+	ProjectHandler
 }
 
 // Configurable handles all server configurations
@@ -60,6 +62,14 @@ type IdentityHandler interface {
 	Whoami(params identity.WhoamiParams, principal *models.AuthInfo) middleware.Responder
 }
 
+/* ProjectHandler  */
+type ProjectHandler interface {
+	/* CreateProject Create Project */
+	CreateProject(params project.CreateProjectParams, principal *models.AuthInfo) middleware.Responder
+	/* ListProject List All Projects */
+	ListProject(params project.ListProjectParams, principal *models.AuthInfo) middleware.Responder
+}
+
 func configureFlags(api *operations.EzDeployApiserverAPI) {
 	Impl.ConfigureFlags(api)
 }
@@ -79,8 +89,14 @@ func configureAPI(api *operations.EzDeployApiserverAPI) http.Handler {
 		return Impl.KeyAuth(token)
 	}
 
+	api.ProjectCreateProjectHandler = project.CreateProjectHandlerFunc(func(params project.CreateProjectParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.CreateProject(params, principal)
+	})
 	api.IdentityCreateUserHandler = identity.CreateUserHandlerFunc(func(params identity.CreateUserParams) middleware.Responder {
 		return Impl.CreateUser(params)
+	})
+	api.ProjectListProjectHandler = project.ListProjectHandlerFunc(func(params project.ListProjectParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.ListProject(params, principal)
 	})
 	api.IdentityLoginHandler = identity.LoginHandlerFunc(func(params identity.LoginParams) middleware.Responder {
 		return Impl.Login(params)

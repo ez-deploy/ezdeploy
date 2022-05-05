@@ -21,6 +21,7 @@ import (
 
 	"github.com/ez-deploy/ezdeploy/models"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/identity"
+	"github.com/ez-deploy/ezdeploy/restapi/operations/project"
 )
 
 // NewEzDeployApiserverAPI creates a new EzDeployApiserver instance
@@ -45,8 +46,14 @@ func NewEzDeployApiserverAPI(spec *loads.Document) *EzDeployApiserverAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		ProjectCreateProjectHandler: project.CreateProjectHandlerFunc(func(params project.CreateProjectParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation project.CreateProject has not yet been implemented")
+		}),
 		IdentityCreateUserHandler: identity.CreateUserHandlerFunc(func(params identity.CreateUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation identity.CreateUser has not yet been implemented")
+		}),
+		ProjectListProjectHandler: project.ListProjectHandlerFunc(func(params project.ListProjectParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation project.ListProject has not yet been implemented")
 		}),
 		IdentityLoginHandler: identity.LoginHandlerFunc(func(params identity.LoginParams) middleware.Responder {
 			return middleware.NotImplemented("operation identity.Login has not yet been implemented")
@@ -107,8 +114,12 @@ type EzDeployApiserverAPI struct {
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
+	// ProjectCreateProjectHandler sets the operation handler for the create project operation
+	ProjectCreateProjectHandler project.CreateProjectHandler
 	// IdentityCreateUserHandler sets the operation handler for the create user operation
 	IdentityCreateUserHandler identity.CreateUserHandler
+	// ProjectListProjectHandler sets the operation handler for the list project operation
+	ProjectListProjectHandler project.ListProjectHandler
 	// IdentityLoginHandler sets the operation handler for the login operation
 	IdentityLoginHandler identity.LoginHandler
 	// IdentityLogoutHandler sets the operation handler for the logout operation
@@ -196,8 +207,14 @@ func (o *EzDeployApiserverAPI) Validate() error {
 		unregistered = append(unregistered, "CookieAuth")
 	}
 
+	if o.ProjectCreateProjectHandler == nil {
+		unregistered = append(unregistered, "project.CreateProjectHandler")
+	}
 	if o.IdentityCreateUserHandler == nil {
 		unregistered = append(unregistered, "identity.CreateUserHandler")
+	}
+	if o.ProjectListProjectHandler == nil {
+		unregistered = append(unregistered, "project.ListProjectHandler")
 	}
 	if o.IdentityLoginHandler == nil {
 		unregistered = append(unregistered, "identity.LoginHandler")
@@ -310,7 +327,15 @@ func (o *EzDeployApiserverAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/project/create"] = project.NewCreateProject(o.context, o.ProjectCreateProjectHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/user/create"] = identity.NewCreateUser(o.context, o.IdentityCreateUserHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/project/list"] = project.NewListProject(o.context, o.ProjectListProjectHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
