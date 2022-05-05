@@ -373,6 +373,35 @@ paths:
           description: Server Error
           schema:
             $ref: '#/definitions/Error'
+  /service/pod/list:
+    get:
+      tags:
+        - Service
+      operationId: ListServicePod
+      description: List Service Pod by service ID.
+      parameters:
+      - name: service_id
+        type: integer
+        in: query
+        required: true
+      responses:
+        "200":
+          description: List Service Pod Success, return service pod info.
+          schema:
+            type: object
+            properties:
+              pods:
+                type: array
+                items:
+                  $ref: '#/definitions/PodInfo'
+        "403":
+          description: List Service Pod Failed, cause do not have permisssion
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
   /rbac/project/get:
     get:
       tags:
@@ -616,6 +645,34 @@ definitions:
         description: environment variable value
         type: string
         example: foobar
+  PodInfo:
+    type: object
+    description: Pod Object
+    properties:
+      name:
+        description: unique name for pod
+        type: string
+        example: foobar-9zqb2
+      status:
+        description: pod status
+        type: string
+        example: Running
+      restarts:
+        description: restart time
+        type: integer
+        example: 0
+      age:
+        description: age of pod
+        type: string
+        example: 1m
+      ip:
+        description: ip of pod
+        type: string
+        example: "10.244.2.61"
+      node:
+        description: node name
+        type: string
+        example: minikube-m03
   RoleInfo:
     type: object
     description: Authority Role Object

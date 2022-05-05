@@ -313,6 +313,51 @@ func init() {
         }
       }
     },
+    "/service/pod/list": {
+      "get": {
+        "description": "List Service Pod by service ID.",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "ListServicePod",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "service_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List Service Pod Success, return service pod info.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pods": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/PodInfo"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "List Service Pod Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/service/update/deploy": {
       "put": {
         "description": "Update Service Version",
@@ -701,6 +746,42 @@ func init() {
           "description": "错误信息",
           "type": "string",
           "example": "error message"
+        }
+      }
+    },
+    "PodInfo": {
+      "description": "Pod Object",
+      "type": "object",
+      "properties": {
+        "age": {
+          "description": "age of pod",
+          "type": "string",
+          "example": "1m"
+        },
+        "ip": {
+          "description": "ip of pod",
+          "type": "string",
+          "example": "10.244.2.61"
+        },
+        "name": {
+          "description": "unique name for pod",
+          "type": "string",
+          "example": "foobar-9zqb2"
+        },
+        "node": {
+          "description": "node name",
+          "type": "string",
+          "example": "minikube-m03"
+        },
+        "restarts": {
+          "description": "restart time",
+          "type": "integer",
+          "example": 0
+        },
+        "status": {
+          "description": "pod status",
+          "type": "string",
+          "example": "Running"
         }
       }
     },
@@ -1360,6 +1441,51 @@ func init() {
         }
       }
     },
+    "/service/pod/list": {
+      "get": {
+        "description": "List Service Pod by service ID.",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "ListServicePod",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "service_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List Service Pod Success, return service pod info.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pods": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/PodInfo"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "List Service Pod Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/service/update/deploy": {
       "put": {
         "description": "Update Service Version",
@@ -1748,6 +1874,42 @@ func init() {
           "description": "错误信息",
           "type": "string",
           "example": "error message"
+        }
+      }
+    },
+    "PodInfo": {
+      "description": "Pod Object",
+      "type": "object",
+      "properties": {
+        "age": {
+          "description": "age of pod",
+          "type": "string",
+          "example": "1m"
+        },
+        "ip": {
+          "description": "ip of pod",
+          "type": "string",
+          "example": "10.244.2.61"
+        },
+        "name": {
+          "description": "unique name for pod",
+          "type": "string",
+          "example": "foobar-9zqb2"
+        },
+        "node": {
+          "description": "node name",
+          "type": "string",
+          "example": "minikube-m03"
+        },
+        "restarts": {
+          "description": "restart time",
+          "type": "integer",
+          "example": 0
+        },
+        "status": {
+          "description": "pod status",
+          "type": "string",
+          "example": "Running"
         }
       }
     },

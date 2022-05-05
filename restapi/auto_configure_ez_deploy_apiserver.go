@@ -94,6 +94,8 @@ type ServiceHandler interface {
 	GetServiceVersion(params service.GetServiceVersionParams, principal *models.AuthInfo) middleware.Responder
 	/* ListService List Service by project ID, service ID, service name. */
 	ListService(params service.ListServiceParams, principal *models.AuthInfo) middleware.Responder
+	/* ListServicePod List Service Pod by service ID. */
+	ListServicePod(params service.ListServicePodParams, principal *models.AuthInfo) middleware.Responder
 	/* ListServiceVersion List Service Version by service ID. */
 	ListServiceVersion(params service.ListServiceVersionParams, principal *models.AuthInfo) middleware.Responder
 	/* UpdateServiceDescription Update Service Description */
@@ -150,6 +152,9 @@ func configureAPI(api *operations.EzDeployApiserverAPI) http.Handler {
 	})
 	api.ServiceListServiceHandler = service.ListServiceHandlerFunc(func(params service.ListServiceParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.ListService(params, principal)
+	})
+	api.ServiceListServicePodHandler = service.ListServicePodHandlerFunc(func(params service.ListServicePodParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.ListServicePod(params, principal)
 	})
 	api.ServiceListServiceVersionHandler = service.ListServiceVersionHandlerFunc(func(params service.ListServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.ListServiceVersion(params, principal)

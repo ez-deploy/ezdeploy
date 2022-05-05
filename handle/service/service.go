@@ -10,6 +10,7 @@ import (
 	"github.com/ez-deploy/ezdeploy/handle/k8s"
 	"github.com/ez-deploy/ezdeploy/handle/rbac"
 	"github.com/ez-deploy/ezdeploy/models"
+	"github.com/ez-deploy/ezdeploy/restapi/operations/service"
 	serviceop "github.com/ez-deploy/ezdeploy/restapi/operations/service"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/pkg/errors"
@@ -20,6 +21,44 @@ type ServiceOperationImpl struct {
 	Tables *db.Tables
 	*ServiceVersionManager
 	K8SManager *k8s.K8SManager
+}
+
+// ListServicePod List Service Pod by service ID.
+func (s *ServiceOperationImpl) ListServicePod(params service.ListServicePodParams, principal *models.AuthInfo) middleware.Responder {
+	// check permission.
+	// check permission.
+	svc, err := s.getServiceByID(params.ServiceID)
+	if err != nil {
+		errBody := newError("get service failed", err.Error())
+		return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+	}
+
+	// Stop And Delete Service First.
+	allowed, err := newRBACManager(s.Tables).Check(principal.UserInfo.ID, svc.ProjectID, models.RolePermissionPermissionDelete)
+	if err != nil {
+		errBody := newError("get permission info failed", err.Error())
+		return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+	}
+	if !allowed {
+		errBody := newError("permission denied")
+		return serviceop.NewUpdateServiceVersionForbidden().WithPayload(errBody)
+	}
+
+	projectInfo, err := s.getProjectByServiceInfo(svc)
+	if err != nil {
+		errBody := newError("get project failed", err.Error())
+		return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+	}
+
+	// get pods in k8s.
+	pods, err := s.K8SManager.ListPods(params.HTTPRequest.Context(), projectInfo.Name, svc.Name)
+	if err != nil {
+		errBody := newError("list pods failed", err.Error())
+		return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
+	}
+
+	respBody := serviceop.ListServicePodOKBody{Pods: pods}
+	return serviceop.NewListServicePodOK().WithPayload(&respBody)
 }
 
 // UpdateServiceVersion Update Service Version
@@ -50,7 +89,7 @@ func (s *ServiceOperationImpl) UpdateServiceVersion(params serviceop.UpdateServi
 		return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
 	}
 	// get service version info.
-	svcVersion, err := s.getServiceVersionByID(params.Body.ID, params.Body.VersionID)
+	svcVersion, err := s.getServiceVersionByID(svc.ID, params.Body.VersionID)
 	if err != nil {
 		errBody := newError("get service version info failed", err.Error())
 		return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
@@ -59,7 +98,7 @@ func (s *ServiceOperationImpl) UpdateServiceVersion(params serviceop.UpdateServi
 	// Set Service Info.
 	if params.Body.ExposeType == models.ServiceInfoExposeTypeNone {
 		// Do Not Expose Service In K8S.
-		err := s.K8SManager.DeleteService(params.HTTPRequest.Context(), project.Name, params.Body.Name)
+		err := s.K8SManager.DeleteService(params.HTTPRequest.Context(), project.Name, svc.Name)
 		if err != nil && !errors.Is(err, k8s.ERRServiceNotFound) {
 			errBody := newError("delete service failed", err.Error())
 			return serviceop.NewUpdateServiceVersionInternalServerError().WithPayload(errBody)
@@ -67,6 +106,7 @@ func (s *ServiceOperationImpl) UpdateServiceVersion(params serviceop.UpdateServi
 	} else {
 		// Expose Service In K8S.
 		fmt.Println(project.Name, params.Body, svcVersion)
+		params.Body.Name = svc.Name
 		err := s.K8SManager.SetService(context.Background(), project.Name, params.Body, svcVersion)
 		if err != nil {
 			errBody := newError("set service failed", err.Error())
@@ -92,7 +132,7 @@ func (s *ServiceOperationImpl) UpdateServiceVersion(params serviceop.UpdateServi
 	}
 
 	// Write Result Into DB.
-	selector := sqlm.SelectorFilter{"id": params.Body.ID}
+	selector := sqlm.SelectorFilter{"id": svc.ID}
 	updateFields := map[string]interface{}{
 		"running":         params.Body.Running,
 		"version_id":      params.Body.VersionID,
@@ -226,7 +266,7 @@ func (s *ServiceOperationImpl) UpdateServiceDescription(params serviceop.UpdateS
 	}
 
 	filter := sqlm.SelectorFilter{
-		"id": params.Body.ID,
+		"id": svc.ID,
 	}
 
 	err = s.Tables.ServiceInfo.Update(filter, map[string]interface{}{"description": params.Body.Description})

@@ -3,7 +3,6 @@ package k8s
 import (
 	"context"
 	"fmt"
-	"math/rand"
 
 	"github.com/ez-deploy/ezdeploy/models"
 	apiv1 "k8s.io/api/core/v1"
@@ -124,7 +123,6 @@ func buildServiceConfigFromServiceInfo(
 			Labels: map[string]string{
 				selectorName: name,
 			},
-			ResourceVersion: fmt.Sprint(rand.Uint64()),
 		},
 		Spec: apiv1.ServiceSpec{
 			Selector: map[string]string{
@@ -141,6 +139,15 @@ func buildServiceConfigFromServiceInfo(
 				},
 			},
 		},
+	}
+
+	if exposeType == apiv1.ServiceTypeClusterIP {
+		svc.Spec.Ports[0] = apiv1.ServicePort{
+			Name:       name,
+			Protocol:   apiv1.ProtocolTCP,
+			TargetPort: intstr.FromInt(containerPort),
+			Port:       inClusterPort,
+		}
 	}
 
 	return svc

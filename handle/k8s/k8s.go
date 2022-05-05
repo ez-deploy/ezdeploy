@@ -6,6 +6,7 @@ type K8SManager struct {
 	*NamespaceManager
 	*ServiceManager
 	*DeploymentManager
+	*PodsManager
 }
 
 func New(clientSet *kubernetes.Clientset) *K8SManager {
@@ -13,5 +14,6 @@ func New(clientSet *kubernetes.Clientset) *K8SManager {
 		NamespaceManager:  &NamespaceManager{ClientSet: clientSet},
 		ServiceManager:    &ServiceManager{ClientSet: clientSet},
 		DeploymentManager: &DeploymentManager{ClientSet: clientSet},
+		PodsManager:       &PodsManager{ClientSet: clientSet},
 	}
 }

@@ -78,6 +78,9 @@ func NewEzDeployApiserverAPI(spec *loads.Document) *EzDeployApiserverAPI {
 		ServiceListServiceHandler: service.ListServiceHandlerFunc(func(params service.ListServiceParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation service.ListService has not yet been implemented")
 		}),
+		ServiceListServicePodHandler: service.ListServicePodHandlerFunc(func(params service.ListServicePodParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation service.ListServicePod has not yet been implemented")
+		}),
 		ServiceListServiceVersionHandler: service.ListServiceVersionHandlerFunc(func(params service.ListServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation service.ListServiceVersion has not yet been implemented")
 		}),
@@ -166,6 +169,8 @@ type EzDeployApiserverAPI struct {
 	RbacGetUserRBACHandler r_b_a_c.GetUserRBACHandler
 	// ServiceListServiceHandler sets the operation handler for the list service operation
 	ServiceListServiceHandler service.ListServiceHandler
+	// ServiceListServicePodHandler sets the operation handler for the list service pod operation
+	ServiceListServicePodHandler service.ListServicePodHandler
 	// ServiceListServiceVersionHandler sets the operation handler for the list service version operation
 	ServiceListServiceVersionHandler service.ListServiceVersionHandler
 	// IdentityLoginHandler sets the operation handler for the login operation
@@ -288,6 +293,9 @@ func (o *EzDeployApiserverAPI) Validate() error {
 	}
 	if o.ServiceListServiceHandler == nil {
 		unregistered = append(unregistered, "service.ListServiceHandler")
+	}
+	if o.ServiceListServicePodHandler == nil {
+		unregistered = append(unregistered, "service.ListServicePodHandler")
 	}
 	if o.ServiceListServiceVersionHandler == nil {
 		unregistered = append(unregistered, "service.ListServiceVersionHandler")
@@ -446,6 +454,10 @@ func (o *EzDeployApiserverAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/service/list"] = service.NewListService(o.context, o.ServiceListServiceHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/service/pod/list"] = service.NewListServicePod(o.context, o.ServiceListServicePodHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

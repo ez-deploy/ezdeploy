@@ -3,7 +3,6 @@ package k8s
 import (
 	"context"
 	"fmt"
-	"math/rand"
 
 	"github.com/ez-deploy/ezdeploy/models"
 	appsv1 "k8s.io/api/apps/v1"
@@ -119,8 +118,7 @@ func buildDeploymentConfigFromServiceInfo(
 
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:            name,
-			ResourceVersion: fmt.Sprint(rand.Uint64()),
+			Name: name,
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: &replica,
