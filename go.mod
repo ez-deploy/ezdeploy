@@ -12,6 +12,7 @@ require (
 	github.com/go-openapi/validate v0.21.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/jessevdk/go-flags v1.5.0
+	github.com/pkg/errors v0.9.1
 	github.com/thanhpk/randstr v1.0.4
 	github.com/wuhuizuo/sqlm v0.0.0-20210826032816-ecaad8462bc6
 	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4
@@ -46,7 +47,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.mongodb.org/mongo-driver v1.8.3 // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect

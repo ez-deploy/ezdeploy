@@ -2,9 +2,12 @@ package models
 
 import (
 	"context"
+	"encoding/json"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // ServiceInfo Service Object
@@ -28,17 +31,30 @@ type ServiceInfo struct {
 	// Example: foobar service
 	Description string `json:"description,omitempty" db:"description,type=VARCHAR(255)"`
 
+	// service is running or not
+	// Example: false
+	Running bool `json:"running,omitempty" db:"running,type=BOOLEAN"`
+
 	// version id
 	// Example: 1
 	VersionID int64 `json:"version_id,omitempty" db:"version_id,type=INTEGER"`
 
 	// number of pod replicas
-	// Example: 1
+	// Example: 16
 	Replica int64 `json:"replica,omitempty" db:"replica,type=INTEGER"`
 
-	// expose port
+	// expose service or not
+	// Example: service
+	// Enum: [incluster nodeport none]
+	ExposeType string `json:"expose_type,omitempty" db:"expose_type,type=VARCHAR(255)"`
+
+	// in-cluster expose port
 	// Example: 80
-	ExposePort int64 `json:"expose_port,omitempty" db:"expose_port,type=INTEGER"`
+	InClusterPort int64 `json:"in_cluster_port,omitempty" db:"in_cluster_port,type=INTEGER"`
+
+	// node-port expose port
+	// Example: 80
+	NodePort int64 `json:"node_port,omitempty" db:"node_port,type=INTEGER"`
 
 	// create at, unix timestamp
 	// Example: 1528894200
@@ -51,6 +67,60 @@ type ServiceInfo struct {
 
 // Validate validates this service info
 func (m *ServiceInfo) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateExposeType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+var serviceInfoTypeExposeTypePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["incluster","nodeport","none"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		serviceInfoTypeExposeTypePropEnum = append(serviceInfoTypeExposeTypePropEnum, v)
+	}
+}
+
+const (
+
+	// ServiceInfoExposeTypeIncluster captures enum value "incluster"
+	ServiceInfoExposeTypeIncluster string = "incluster"
+
+	// ServiceInfoExposeTypeNodeport captures enum value "nodeport"
+	ServiceInfoExposeTypeNodeport string = "nodeport"
+
+	// ServiceInfoExposeTypeNone captures enum value "none"
+	ServiceInfoExposeTypeNone string = "none"
+)
+
+// prop value enum
+func (m *ServiceInfo) validateExposeTypeEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, serviceInfoTypeExposeTypePropEnum, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *ServiceInfo) validateExposeType(formats strfmt.Registry) error {
+	if swag.IsZero(m.ExposeType) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateExposeTypeEnum("expose_type", "body", m.ExposeType); err != nil {
+		return err
+	}
+
 	return nil
 }
 

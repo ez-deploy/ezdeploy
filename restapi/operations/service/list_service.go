@@ -6,9 +6,14 @@ package service
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
+	"strconv"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 
 	"github.com/ez-deploy/ezdeploy/models"
 )
@@ -68,4 +73,105 @@ func (o *ListService) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	res := o.Handler.Handle(Params, principal) // actually handle the request
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
+}
+
+// ListServiceOKBody list service o k body
+//
+// swagger:model ListServiceOKBody
+type ListServiceOKBody struct {
+
+	// services
+	Services []*models.ServiceInfo `json:"services"`
+}
+
+// Validate validates this list service o k body
+func (o *ListServiceOKBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateServices(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ListServiceOKBody) validateServices(formats strfmt.Registry) error {
+	if swag.IsZero(o.Services) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Services); i++ {
+		if swag.IsZero(o.Services[i]) { // not required
+			continue
+		}
+
+		if o.Services[i] != nil {
+			if err := o.Services[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("listServiceOK" + "." + "services" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("listServiceOK" + "." + "services" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this list service o k body based on the context it is used
+func (o *ListServiceOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateServices(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ListServiceOKBody) contextValidateServices(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Services); i++ {
+
+		if o.Services[i] != nil {
+			if err := o.Services[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("listServiceOK" + "." + "services" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("listServiceOK" + "." + "services" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *ListServiceOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *ListServiceOKBody) UnmarshalBinary(b []byte) error {
+	var res ListServiceOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
 }

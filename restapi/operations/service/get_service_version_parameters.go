@@ -34,9 +34,10 @@ type GetServiceVersionParams struct {
 	HTTPRequest *http.Request `json:"-"`
 
 	/*
+	  Required: true
 	  In: query
 	*/
-	ServiceID *int64
+	ServiceID int64
 	/*
 	  Required: true
 	  In: query
@@ -72,23 +73,26 @@ func (o *GetServiceVersionParams) BindRequest(r *http.Request, route *middleware
 
 // bindServiceID binds and validates parameter ServiceID from query.
 func (o *GetServiceVersionParams) bindServiceID(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	if !hasKey {
+		return errors.Required("service_id", "query", rawData)
+	}
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
 	}
 
-	// Required: false
+	// Required: true
 	// AllowEmptyValue: false
 
-	if raw == "" { // empty values pass all other validations
-		return nil
+	if err := validate.RequiredString("service_id", "query", raw); err != nil {
+		return err
 	}
 
 	value, err := swag.ConvertInt64(raw)
 	if err != nil {
 		return errors.InvalidType("service_id", "query", "int64", raw)
 	}
-	o.ServiceID = &value
+	o.ServiceID = value
 
 	return nil
 }

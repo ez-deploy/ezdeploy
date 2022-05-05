@@ -15,7 +15,7 @@ import (
 
 // GetServiceVersionURL generates an URL for the get service version operation
 type GetServiceVersionURL struct {
-	ServiceID *int64
+	ServiceID int64
 	VersionID int64
 
 	_basePath string
@@ -49,10 +49,7 @@ func (o *GetServiceVersionURL) Build() (*url.URL, error) {
 
 	qs := make(url.Values)
 
-	var serviceIDQ string
-	if o.ServiceID != nil {
-		serviceIDQ = swag.FormatInt64(*o.ServiceID)
-	}
+	serviceIDQ := swag.FormatInt64(o.ServiceID)
 	if serviceIDQ != "" {
 		qs.Set("service_id", serviceIDQ)
 	}

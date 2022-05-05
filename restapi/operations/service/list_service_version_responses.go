@@ -25,7 +25,7 @@ type ListServiceVersionOK struct {
 	/*
 	  In: Body
 	*/
-	Payload []*models.ServiceVersion `json:"body,omitempty"`
+	Payload *ListServiceVersionOKBody `json:"body,omitempty"`
 }
 
 // NewListServiceVersionOK creates ListServiceVersionOK with default headers values
@@ -35,13 +35,13 @@ func NewListServiceVersionOK() *ListServiceVersionOK {
 }
 
 // WithPayload adds the payload to the list service version o k response
-func (o *ListServiceVersionOK) WithPayload(payload []*models.ServiceVersion) *ListServiceVersionOK {
+func (o *ListServiceVersionOK) WithPayload(payload *ListServiceVersionOKBody) *ListServiceVersionOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the list service version o k response
-func (o *ListServiceVersionOK) SetPayload(payload []*models.ServiceVersion) {
+func (o *ListServiceVersionOK) SetPayload(payload *ListServiceVersionOKBody) {
 	o.Payload = payload
 }
 
@@ -49,14 +49,11 @@ func (o *ListServiceVersionOK) SetPayload(payload []*models.ServiceVersion) {
 func (o *ListServiceVersionOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	payload := o.Payload
-	if payload == nil {
-		// return empty array
-		payload = make([]*models.ServiceVersion, 0, 50)
-	}
-
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
 	}
 }
 

@@ -287,7 +287,15 @@ func init() {
           "200": {
             "description": "List All Services Success, return service info. (service name, service id, service description)",
             "schema": {
-              "$ref": "#/definitions/ServiceInfo"
+              "type": "object",
+              "properties": {
+                "services": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ServiceInfo"
+                  }
+                }
+              }
             }
           },
           "403": {
@@ -439,7 +447,8 @@ func init() {
           {
             "type": "integer",
             "name": "service_id",
-            "in": "query"
+            "in": "query",
+            "required": true
           },
           {
             "type": "integer",
@@ -489,9 +498,14 @@ func init() {
           "200": {
             "description": "List Service Version Success, return service version info.",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/ServiceVersion"
+              "type": "object",
+              "properties": {
+                "versions": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ServiceVersion"
+                  }
+                }
               }
             }
           },
@@ -849,20 +863,35 @@ func init() {
           "type": "string",
           "example": "foobar service"
         },
-        "expose_port": {
-          "description": "expose port",
-          "type": "integer",
-          "example": 80
+        "expose_type": {
+          "description": "expose service or not",
+          "type": "string",
+          "enum": [
+            "incluster",
+            "nodeport",
+            "none"
+          ],
+          "example": "service"
         },
         "id": {
           "description": "id",
           "type": "integer",
           "example": 1
         },
+        "in_cluster_port": {
+          "description": "in-cluster expose port",
+          "type": "integer",
+          "example": 80
+        },
         "name": {
           "description": "service name",
           "type": "string",
           "example": "foobar"
+        },
+        "node_port": {
+          "description": "node-port expose port",
+          "type": "integer",
+          "example": 80
         },
         "project_id": {
           "description": "project id",
@@ -872,7 +901,12 @@ func init() {
         "replica": {
           "description": "number of pod replicas",
           "type": "integer",
-          "example": 1
+          "example": 16
+        },
+        "running": {
+          "description": "service is running or not",
+          "type": "boolean",
+          "example": false
         },
         "update_at": {
           "description": "update at, unix timestamp",
@@ -890,6 +924,11 @@ func init() {
       "description": "Service Version Object",
       "type": "object",
       "properties": {
+        "container_port": {
+          "description": "container port",
+          "type": "integer",
+          "example": 80
+        },
         "create_at": {
           "description": "create at, unix timestamp",
           "type": "integer",
@@ -1295,7 +1334,15 @@ func init() {
           "200": {
             "description": "List All Services Success, return service info. (service name, service id, service description)",
             "schema": {
-              "$ref": "#/definitions/ServiceInfo"
+              "type": "object",
+              "properties": {
+                "services": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ServiceInfo"
+                  }
+                }
+              }
             }
           },
           "403": {
@@ -1447,7 +1494,8 @@ func init() {
           {
             "type": "integer",
             "name": "service_id",
-            "in": "query"
+            "in": "query",
+            "required": true
           },
           {
             "type": "integer",
@@ -1497,9 +1545,14 @@ func init() {
           "200": {
             "description": "List Service Version Success, return service version info.",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/ServiceVersion"
+              "type": "object",
+              "properties": {
+                "versions": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ServiceVersion"
+                  }
+                }
               }
             }
           },
@@ -1857,20 +1910,35 @@ func init() {
           "type": "string",
           "example": "foobar service"
         },
-        "expose_port": {
-          "description": "expose port",
-          "type": "integer",
-          "example": 80
+        "expose_type": {
+          "description": "expose service or not",
+          "type": "string",
+          "enum": [
+            "incluster",
+            "nodeport",
+            "none"
+          ],
+          "example": "service"
         },
         "id": {
           "description": "id",
           "type": "integer",
           "example": 1
         },
+        "in_cluster_port": {
+          "description": "in-cluster expose port",
+          "type": "integer",
+          "example": 80
+        },
         "name": {
           "description": "service name",
           "type": "string",
           "example": "foobar"
+        },
+        "node_port": {
+          "description": "node-port expose port",
+          "type": "integer",
+          "example": 80
         },
         "project_id": {
           "description": "project id",
@@ -1880,7 +1948,12 @@ func init() {
         "replica": {
           "description": "number of pod replicas",
           "type": "integer",
-          "example": 1
+          "example": 16
+        },
+        "running": {
+          "description": "service is running or not",
+          "type": "boolean",
+          "example": false
         },
         "update_at": {
           "description": "update at, unix timestamp",
@@ -1898,6 +1971,11 @@ func init() {
       "description": "Service Version Object",
       "type": "object",
       "properties": {
+        "container_port": {
+          "description": "container port",
+          "type": "integer",
+          "example": 80
+        },
         "create_at": {
           "description": "create at, unix timestamp",
           "type": "integer",

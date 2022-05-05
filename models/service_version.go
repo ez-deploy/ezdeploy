@@ -28,6 +28,10 @@ type ServiceVersion struct {
 	// Example: busybox:latest
 	Image string `json:"image,omitempty" db:"image,type=VARCHAR(255)"`
 
+	// container port
+	// Example: 80
+	ContainerPort int64 `json:"container_port,omitempty" db:"container_port,type=INTEGER"`
+
 	// create at, unix timestamp
 	// Example: 1528894200
 	CreateAt int64 `json:"create_at,omitempty" db:"create_at,type=INTEGER"`

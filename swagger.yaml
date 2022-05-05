@@ -199,7 +199,12 @@ paths:
         "200":
           description: List All Services Success, return service info. (service name, service id, service description)
           schema:
-            $ref: '#/definitions/ServiceInfo'
+            type: object
+            properties:
+              services:
+                type: array
+                items:
+                  $ref: '#/definitions/ServiceInfo'
         "403":
           description: List Service Failed, cause do not have permisssion
           schema:
@@ -321,6 +326,7 @@ paths:
       - name: service_id
         type: integer
         in: query
+        required: true
       - name: version_id
         type: integer
         in: query
@@ -353,9 +359,12 @@ paths:
         "200":
           description: List Service Version Success, return service version info.
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/ServiceVersion'
+            type: object
+            properties:
+              versions:
+                type: array
+                items:
+                  $ref: '#/definitions/ServiceVersion'
         "403":
           description: List Service Version Failed, cause do not have permisssion
           schema:
@@ -511,6 +520,10 @@ definitions:
         description: project id
         type: integer
         example: 1
+      running:
+        description: service is running or not
+        type: boolean
+        example: false
       version_id:
         description: version id
         type: integer
@@ -526,9 +539,21 @@ definitions:
       replica:
         description: number of pod replicas
         type: integer
-        example: 1
-      expose_port:
-        description: expose port
+        example: 16
+      expose_type:
+        description: expose service or not
+        type: string
+        enum:
+        - incluster
+        - nodeport
+        - none
+        example: service
+      in_cluster_port:
+        description: in-cluster expose port
+        type: integer
+        example: 80
+      node_port:
+        description: node-port expose port
         type: integer
         example: 80
       create_at:
@@ -551,6 +576,10 @@ definitions:
         description: service id
         type: integer
         example: 1
+      container_port:
+        description: container port
+        type: integer
+        example: 80
       image:
         description: image name
         type: string

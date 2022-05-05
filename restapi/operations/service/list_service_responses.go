@@ -25,7 +25,7 @@ type ListServiceOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.ServiceInfo `json:"body,omitempty"`
+	Payload *ListServiceOKBody `json:"body,omitempty"`
 }
 
 // NewListServiceOK creates ListServiceOK with default headers values
@@ -35,13 +35,13 @@ func NewListServiceOK() *ListServiceOK {
 }
 
 // WithPayload adds the payload to the list service o k response
-func (o *ListServiceOK) WithPayload(payload *models.ServiceInfo) *ListServiceOK {
+func (o *ListServiceOK) WithPayload(payload *ListServiceOKBody) *ListServiceOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the list service o k response
-func (o *ListServiceOK) SetPayload(payload *models.ServiceInfo) {
+func (o *ListServiceOK) SetPayload(payload *ListServiceOKBody) {
 	o.Payload = payload
 }
 
