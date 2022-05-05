@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"net/mail"
 	"strings"
 	"time"
 
@@ -24,6 +25,11 @@ type UserOperationImpl struct {
 // CreateUser Create user.
 func (u *UserOperationImpl) CreateUser(params identity.CreateUserParams) middleware.Responder {
 	userInfo := params.Body
+
+	if !isUserInfoValid(userInfo) {
+		errBody := newError("user info invalid")
+		return identity.NewCreateUserConflict().WithPayload(errBody)
+	}
 
 	isExists, err := u.isUserExist(userInfo.Email)
 	if err != nil {
@@ -154,6 +160,24 @@ func (u *UserOperationImpl) isUserExist(email string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+// isUserInfoValid check if user info is valid.
+func isUserInfoValid(user *models.UserInfo) bool {
+	return isEmailValid(user.Email) && isPasswordValid(user.Password) && isNameValid(user.UserName)
+}
+
+func isEmailValid(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
+}
+
+func isPasswordValid(password string) bool {
+	return len(password) > 6
+}
+
+func isNameValid(name string) bool {
+	return len(name) > 0
 }
 
 func newTokenManager(tables *db.Tables) *TokenOperationImpl {
