@@ -133,7 +133,7 @@ func init() {
               "$ref": "#/definitions/ProjectRole"
             }
           },
-          "404": {
+          "403": {
             "description": "Get Project RBAC Failed, cause project not exist",
             "schema": {
               "$ref": "#/definitions/Error"
@@ -155,15 +155,6 @@ func init() {
           "RBAC"
         ],
         "operationId": "GetUserRBAC",
-        "parameters": [
-          {
-            "type": "integer",
-            "description": "userID",
-            "name": "id",
-            "in": "query",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
             "description": "List All Users RBAC Success, return user RBAC info.",
@@ -173,6 +164,339 @@ func init() {
           },
           "404": {
             "description": "Get User RBAC Failed, cause user not exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/create": {
+      "post": {
+        "description": "Create Service",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "CreateService",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create Service Success, return service info.",
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          },
+          "403": {
+            "description": "Create Service Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "Create Service Failed, cause service exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/delete": {
+      "delete": {
+        "description": "Delete Service",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "DeleteService",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete Service Success, return service info.",
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          },
+          "403": {
+            "description": "Delete Service Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/list": {
+      "get": {
+        "description": "List Service by project ID, service ID, service name.",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "ListService",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "project_id",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "name": "service_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "name": "service_name",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List All Services Success, return service info. (service name, service id, service description)",
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          },
+          "403": {
+            "description": "List Service Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/update/deploy": {
+      "put": {
+        "description": "Update Service Version",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "UpdateServiceVersion",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update Service Version Success, return service info.",
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          },
+          "403": {
+            "description": "Update Service Version Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/update/desc": {
+      "put": {
+        "description": "Update Service Description",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "UpdateServiceDescription",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update Service Description Success, return service info.",
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          },
+          "403": {
+            "description": "Update Service Description Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/version/create": {
+      "post": {
+        "description": "Create Service Version",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "CreateServiceVersion",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceVersion"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create Service Version Success, return service version info.",
+            "schema": {
+              "$ref": "#/definitions/ServiceVersion"
+            }
+          },
+          "403": {
+            "description": "Create Service Version Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "Create Service Version Failed, cause service version exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/version/get": {
+      "get": {
+        "description": "get Service Version by version ID.",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "GetServiceVersion",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "service_id",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "name": "version_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List Service Version Success, return service version info.",
+            "schema": {
+              "$ref": "#/definitions/ServiceVersion"
+            }
+          },
+          "403": {
+            "description": "List Service Version Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/version/list": {
+      "get": {
+        "description": "List Service Version by service ID.",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "ListServiceVersion",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "service_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List Service Version Success, return service version info.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ServiceVersion"
+              }
+            }
+          },
+          "403": {
+            "description": "List Service Version Failed, cause do not have permisssion",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -817,7 +1141,7 @@ func init() {
               "$ref": "#/definitions/ProjectRole"
             }
           },
-          "404": {
+          "403": {
             "description": "Get Project RBAC Failed, cause project not exist",
             "schema": {
               "$ref": "#/definitions/Error"
@@ -839,15 +1163,6 @@ func init() {
           "RBAC"
         ],
         "operationId": "GetUserRBAC",
-        "parameters": [
-          {
-            "type": "integer",
-            "description": "userID",
-            "name": "id",
-            "in": "query",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
             "description": "List All Users RBAC Success, return user RBAC info.",
@@ -857,6 +1172,339 @@ func init() {
           },
           "404": {
             "description": "Get User RBAC Failed, cause user not exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/create": {
+      "post": {
+        "description": "Create Service",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "CreateService",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create Service Success, return service info.",
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          },
+          "403": {
+            "description": "Create Service Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "Create Service Failed, cause service exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/delete": {
+      "delete": {
+        "description": "Delete Service",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "DeleteService",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete Service Success, return service info.",
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          },
+          "403": {
+            "description": "Delete Service Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/list": {
+      "get": {
+        "description": "List Service by project ID, service ID, service name.",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "ListService",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "project_id",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "name": "service_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "name": "service_name",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List All Services Success, return service info. (service name, service id, service description)",
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          },
+          "403": {
+            "description": "List Service Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/update/deploy": {
+      "put": {
+        "description": "Update Service Version",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "UpdateServiceVersion",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update Service Version Success, return service info.",
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          },
+          "403": {
+            "description": "Update Service Version Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/update/desc": {
+      "put": {
+        "description": "Update Service Description",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "UpdateServiceDescription",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update Service Description Success, return service info.",
+            "schema": {
+              "$ref": "#/definitions/ServiceInfo"
+            }
+          },
+          "403": {
+            "description": "Update Service Description Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/version/create": {
+      "post": {
+        "description": "Create Service Version",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "CreateServiceVersion",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceVersion"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create Service Version Success, return service version info.",
+            "schema": {
+              "$ref": "#/definitions/ServiceVersion"
+            }
+          },
+          "403": {
+            "description": "Create Service Version Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "Create Service Version Failed, cause service version exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/version/get": {
+      "get": {
+        "description": "get Service Version by version ID.",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "GetServiceVersion",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "service_id",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "name": "version_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List Service Version Success, return service version info.",
+            "schema": {
+              "$ref": "#/definitions/ServiceVersion"
+            }
+          },
+          "403": {
+            "description": "List Service Version Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/service/version/list": {
+      "get": {
+        "description": "List Service Version by service ID.",
+        "tags": [
+          "Service"
+        ],
+        "operationId": "ListServiceVersion",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "service_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List Service Version Success, return service version info.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ServiceVersion"
+              }
+            }
+          },
+          "403": {
+            "description": "List Service Version Failed, cause do not have permisssion",
             "schema": {
               "$ref": "#/definitions/Error"
             }

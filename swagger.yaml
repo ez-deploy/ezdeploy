@@ -150,6 +150,220 @@ paths:
           description: Server Error
           schema:
             $ref: '#/definitions/Error'
+  /service/create:
+    post:
+      tags:
+        - Service
+      operationId: CreateService
+      description: Create Service
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceInfo'
+      responses:
+        "201":
+          description: Create Service Success, return service info.
+          schema:
+            $ref: '#/definitions/ServiceInfo'
+        "403":
+          description: Create Service Failed, cause do not have permisssion
+          schema:
+            $ref: '#/definitions/Error'
+        "409":
+          description: Create Service Failed, cause service exist
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /service/list:
+    get:
+      tags:
+        - Service
+      operationId: ListService
+      description: List Service by project ID, service ID, service name.
+      parameters:
+      - name: project_id
+        type: integer
+        in: query
+      - name: service_id
+        type: integer
+        in: query
+      - name: service_name
+        type: string
+        in: query
+      responses:
+        "200":
+          description: List All Services Success, return service info. (service name, service id, service description)
+          schema:
+            $ref: '#/definitions/ServiceInfo'
+        "403":
+          description: List Service Failed, cause do not have permisssion
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /service/delete:
+    delete:
+      tags:
+        - Service
+      operationId: DeleteService
+      description: Delete Service
+      parameters:
+      - name: id
+        type: integer
+        in: query
+        required: true
+      responses:
+        "200":
+          description: Delete Service Success, return service info.
+          schema:
+            $ref: '#/definitions/ServiceInfo'
+        "403":
+          description: Delete Service Failed, cause do not have permisssion
+          schema:
+            $ref: '#/definitions/Error'
+        "500": 
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /service/update/deploy:
+    put:
+      tags:
+        - Service
+      operationId: UpdateServiceVersion
+      description: Update Service Version
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceInfo'
+      responses:
+        "200":
+          description: Update Service Version Success, return service info.
+          schema:
+            $ref: '#/definitions/ServiceInfo'
+        "403":
+          description: Update Service Version Failed, cause do not have permisssion
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /service/update/desc:
+    put:
+      tags:
+        - Service
+      operationId: UpdateServiceDescription
+      description: Update Service Description
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceInfo'
+      responses:
+        "200":
+          description: Update Service Description Success, return service info.
+          schema:
+            $ref: '#/definitions/ServiceInfo'
+        "403":
+          description: Update Service Description Failed, cause do not have permisssion
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /service/version/create:
+    post:
+      tags:
+        - Service
+      operationId: CreateServiceVersion
+      description: Create Service Version
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceVersion'
+      responses:
+        "201":
+          description: Create Service Version Success, return service version info.
+          schema:
+            $ref: '#/definitions/ServiceVersion'
+        "403":
+          description: Create Service Version Failed, cause do not have permisssion
+          schema:
+            $ref: '#/definitions/Error'
+        "409":
+          description: Create Service Version Failed, cause service version exist
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /service/version/get:
+    get:
+      tags:
+        - Service
+      operationId: GetServiceVersion
+      description: get Service Version by version ID.
+      parameters:
+      - name: service_id
+        type: integer
+        in: query
+      - name: version_id
+        type: integer
+        in: query
+        required: true
+      responses:
+        "200":
+          description: List Service Version Success, return service version info.
+          schema:
+            $ref: '#/definitions/ServiceVersion'
+        "403":
+          description: List Service Version Failed, cause do not have permisssion
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /service/version/list:
+    get:
+      tags:
+        - Service
+      operationId: ListServiceVersion
+      description: List Service Version by service ID.
+      parameters:
+      - name: service_id
+        type: integer
+        in: query
+        required: true
+      responses:
+        "200":
+          description: List Service Version Success, return service version info.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ServiceVersion'
+        "403":
+          description: List Service Version Failed, cause do not have permisssion
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
   /rbac/project/get:
     get:
       tags:
@@ -167,7 +381,7 @@ paths:
           description: List All Projects RBAC Success, return project RBAC info.
           schema:
             $ref: '#/definitions/ProjectRole'
-        "404":
+        "403":
           description: Get Project RBAC Failed, cause project not exist
           schema:
             $ref: '#/definitions/Error'
@@ -181,12 +395,6 @@ paths:
         - RBAC
       operationId: GetUserRBAC
       description: Get User RBAC
-      parameters:
-      - name: id
-        type: integer
-        description: userID
-        in: query
-        required: true
       responses:
         "200":
           description: List All Users RBAC Success, return user RBAC info.

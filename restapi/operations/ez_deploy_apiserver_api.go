@@ -23,6 +23,7 @@ import (
 	"github.com/ez-deploy/ezdeploy/restapi/operations/identity"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/project"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/r_b_a_c"
+	"github.com/ez-deploy/ezdeploy/restapi/operations/service"
 )
 
 // NewEzDeployApiserverAPI creates a new EzDeployApiserver instance
@@ -50,8 +51,17 @@ func NewEzDeployApiserverAPI(spec *loads.Document) *EzDeployApiserverAPI {
 		ProjectCreateProjectHandler: project.CreateProjectHandlerFunc(func(params project.CreateProjectParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation project.CreateProject has not yet been implemented")
 		}),
+		ServiceCreateServiceHandler: service.CreateServiceHandlerFunc(func(params service.CreateServiceParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation service.CreateService has not yet been implemented")
+		}),
+		ServiceCreateServiceVersionHandler: service.CreateServiceVersionHandlerFunc(func(params service.CreateServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation service.CreateServiceVersion has not yet been implemented")
+		}),
 		IdentityCreateUserHandler: identity.CreateUserHandlerFunc(func(params identity.CreateUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation identity.CreateUser has not yet been implemented")
+		}),
+		ServiceDeleteServiceHandler: service.DeleteServiceHandlerFunc(func(params service.DeleteServiceParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation service.DeleteService has not yet been implemented")
 		}),
 		ProjectGetProjectHandler: project.GetProjectHandlerFunc(func(params project.GetProjectParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation project.GetProject has not yet been implemented")
@@ -59,14 +69,29 @@ func NewEzDeployApiserverAPI(spec *loads.Document) *EzDeployApiserverAPI {
 		RbacGetProjectRBACHandler: r_b_a_c.GetProjectRBACHandlerFunc(func(params r_b_a_c.GetProjectRBACParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation r_b_a_c.GetProjectRBAC has not yet been implemented")
 		}),
+		ServiceGetServiceVersionHandler: service.GetServiceVersionHandlerFunc(func(params service.GetServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation service.GetServiceVersion has not yet been implemented")
+		}),
 		RbacGetUserRBACHandler: r_b_a_c.GetUserRBACHandlerFunc(func(params r_b_a_c.GetUserRBACParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation r_b_a_c.GetUserRBAC has not yet been implemented")
+		}),
+		ServiceListServiceHandler: service.ListServiceHandlerFunc(func(params service.ListServiceParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation service.ListService has not yet been implemented")
+		}),
+		ServiceListServiceVersionHandler: service.ListServiceVersionHandlerFunc(func(params service.ListServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation service.ListServiceVersion has not yet been implemented")
 		}),
 		IdentityLoginHandler: identity.LoginHandlerFunc(func(params identity.LoginParams) middleware.Responder {
 			return middleware.NotImplemented("operation identity.Login has not yet been implemented")
 		}),
 		IdentityLogoutHandler: identity.LogoutHandlerFunc(func(params identity.LogoutParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation identity.Logout has not yet been implemented")
+		}),
+		ServiceUpdateServiceDescriptionHandler: service.UpdateServiceDescriptionHandlerFunc(func(params service.UpdateServiceDescriptionParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation service.UpdateServiceDescription has not yet been implemented")
+		}),
+		ServiceUpdateServiceVersionHandler: service.UpdateServiceVersionHandlerFunc(func(params service.UpdateServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation service.UpdateServiceVersion has not yet been implemented")
 		}),
 		IdentityWhoamiHandler: identity.WhoamiHandlerFunc(func(params identity.WhoamiParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation identity.Whoami has not yet been implemented")
@@ -123,18 +148,34 @@ type EzDeployApiserverAPI struct {
 
 	// ProjectCreateProjectHandler sets the operation handler for the create project operation
 	ProjectCreateProjectHandler project.CreateProjectHandler
+	// ServiceCreateServiceHandler sets the operation handler for the create service operation
+	ServiceCreateServiceHandler service.CreateServiceHandler
+	// ServiceCreateServiceVersionHandler sets the operation handler for the create service version operation
+	ServiceCreateServiceVersionHandler service.CreateServiceVersionHandler
 	// IdentityCreateUserHandler sets the operation handler for the create user operation
 	IdentityCreateUserHandler identity.CreateUserHandler
+	// ServiceDeleteServiceHandler sets the operation handler for the delete service operation
+	ServiceDeleteServiceHandler service.DeleteServiceHandler
 	// ProjectGetProjectHandler sets the operation handler for the get project operation
 	ProjectGetProjectHandler project.GetProjectHandler
 	// RbacGetProjectRBACHandler sets the operation handler for the get project r b a c operation
 	RbacGetProjectRBACHandler r_b_a_c.GetProjectRBACHandler
+	// ServiceGetServiceVersionHandler sets the operation handler for the get service version operation
+	ServiceGetServiceVersionHandler service.GetServiceVersionHandler
 	// RbacGetUserRBACHandler sets the operation handler for the get user r b a c operation
 	RbacGetUserRBACHandler r_b_a_c.GetUserRBACHandler
+	// ServiceListServiceHandler sets the operation handler for the list service operation
+	ServiceListServiceHandler service.ListServiceHandler
+	// ServiceListServiceVersionHandler sets the operation handler for the list service version operation
+	ServiceListServiceVersionHandler service.ListServiceVersionHandler
 	// IdentityLoginHandler sets the operation handler for the login operation
 	IdentityLoginHandler identity.LoginHandler
 	// IdentityLogoutHandler sets the operation handler for the logout operation
 	IdentityLogoutHandler identity.LogoutHandler
+	// ServiceUpdateServiceDescriptionHandler sets the operation handler for the update service description operation
+	ServiceUpdateServiceDescriptionHandler service.UpdateServiceDescriptionHandler
+	// ServiceUpdateServiceVersionHandler sets the operation handler for the update service version operation
+	ServiceUpdateServiceVersionHandler service.UpdateServiceVersionHandler
 	// IdentityWhoamiHandler sets the operation handler for the whoami operation
 	IdentityWhoamiHandler identity.WhoamiHandler
 
@@ -221,8 +262,17 @@ func (o *EzDeployApiserverAPI) Validate() error {
 	if o.ProjectCreateProjectHandler == nil {
 		unregistered = append(unregistered, "project.CreateProjectHandler")
 	}
+	if o.ServiceCreateServiceHandler == nil {
+		unregistered = append(unregistered, "service.CreateServiceHandler")
+	}
+	if o.ServiceCreateServiceVersionHandler == nil {
+		unregistered = append(unregistered, "service.CreateServiceVersionHandler")
+	}
 	if o.IdentityCreateUserHandler == nil {
 		unregistered = append(unregistered, "identity.CreateUserHandler")
+	}
+	if o.ServiceDeleteServiceHandler == nil {
+		unregistered = append(unregistered, "service.DeleteServiceHandler")
 	}
 	if o.ProjectGetProjectHandler == nil {
 		unregistered = append(unregistered, "project.GetProjectHandler")
@@ -230,14 +280,29 @@ func (o *EzDeployApiserverAPI) Validate() error {
 	if o.RbacGetProjectRBACHandler == nil {
 		unregistered = append(unregistered, "r_b_a_c.GetProjectRBACHandler")
 	}
+	if o.ServiceGetServiceVersionHandler == nil {
+		unregistered = append(unregistered, "service.GetServiceVersionHandler")
+	}
 	if o.RbacGetUserRBACHandler == nil {
 		unregistered = append(unregistered, "r_b_a_c.GetUserRBACHandler")
+	}
+	if o.ServiceListServiceHandler == nil {
+		unregistered = append(unregistered, "service.ListServiceHandler")
+	}
+	if o.ServiceListServiceVersionHandler == nil {
+		unregistered = append(unregistered, "service.ListServiceVersionHandler")
 	}
 	if o.IdentityLoginHandler == nil {
 		unregistered = append(unregistered, "identity.LoginHandler")
 	}
 	if o.IdentityLogoutHandler == nil {
 		unregistered = append(unregistered, "identity.LogoutHandler")
+	}
+	if o.ServiceUpdateServiceDescriptionHandler == nil {
+		unregistered = append(unregistered, "service.UpdateServiceDescriptionHandler")
+	}
+	if o.ServiceUpdateServiceVersionHandler == nil {
+		unregistered = append(unregistered, "service.UpdateServiceVersionHandler")
 	}
 	if o.IdentityWhoamiHandler == nil {
 		unregistered = append(unregistered, "identity.WhoamiHandler")
@@ -348,7 +413,19 @@ func (o *EzDeployApiserverAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/service/create"] = service.NewCreateService(o.context, o.ServiceCreateServiceHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/service/version/create"] = service.NewCreateServiceVersion(o.context, o.ServiceCreateServiceVersionHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/user/create"] = identity.NewCreateUser(o.context, o.IdentityCreateUserHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/service/delete"] = service.NewDeleteService(o.context, o.ServiceDeleteServiceHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -360,7 +437,19 @@ func (o *EzDeployApiserverAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/service/version/get"] = service.NewGetServiceVersion(o.context, o.ServiceGetServiceVersionHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/rbac/user/get"] = r_b_a_c.NewGetUserRBAC(o.context, o.RbacGetUserRBACHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/service/list"] = service.NewListService(o.context, o.ServiceListServiceHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/service/version/list"] = service.NewListServiceVersion(o.context, o.ServiceListServiceVersionHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -369,6 +458,14 @@ func (o *EzDeployApiserverAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/user/logout"] = identity.NewLogout(o.context, o.IdentityLogoutHandler)
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/service/update/desc"] = service.NewUpdateServiceDescription(o.context, o.ServiceUpdateServiceDescriptionHandler)
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/service/update/deploy"] = service.NewUpdateServiceVersion(o.context, o.ServiceUpdateServiceVersionHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

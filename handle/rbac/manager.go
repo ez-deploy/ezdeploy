@@ -11,6 +11,48 @@ type RBACManager struct {
 	Tables *db.Tables
 }
 
+// Check if user can do operation on project.
+func (m *RBACManager) Check(userID, projectID int64, operation string) (bool, error) {
+	projectRoles, err := m.GetProjectRoleByProjectID(projectID)
+	if err != nil {
+		return false, err
+	}
+
+	allow := false
+	for _, role := range projectRoles.Roles {
+		permisssionInRole := false
+		for _, permisssion := range role.Permissions {
+			if operation == permisssion.Permission {
+				permisssionInRole = true
+				break
+			}
+		}
+
+		if !permisssionInRole {
+			continue
+		}
+
+		// permisssionInRole.
+		userInRole := false
+		for _, member := range role.Members {
+			if userID == member.UserID {
+				userInRole = true
+				break
+			}
+		}
+
+		if !userInRole {
+			continue
+		}
+
+		// user in this role, and permission is allowed.
+		allow = true
+		break
+	}
+
+	return allow, nil
+}
+
 // CreateRole and set ids.
 func (m *RBACManager) CreateRole(role *models.RoleView) (err error) {
 	if role.Info.ID, err = m.Tables.RoleInfo.Insert(role.Info); err != nil {
@@ -34,6 +76,36 @@ func (m *RBACManager) CreateRole(role *models.RoleView) (err error) {
 	}
 
 	return nil
+}
+
+func (m *RBACManager) GetProjectRoleByProjectID(projectID int64) (*models.ProjectRole, error) {
+	listRoleFilter := &sqlm.SelectorFilter{"project_id": projectID}
+	listRoleOptions := sqlm.ListOptions{AllColumns: true}
+
+	listResults, err := m.Tables.RoleInfo.List(listRoleFilter, listRoleOptions)
+	if err != nil {
+		return nil, err
+	}
+
+	// all role ids.
+	roleInfos := []*models.RoleInfo{}
+	for _, result := range listResults {
+		roleInfos = append(roleInfos, result.(*models.RoleInfo))
+	}
+
+	// all role views.
+	roleViews := []*models.RoleView{}
+	for _, roleMember := range roleInfos {
+		roleView, err := m.GetRoleViewByRoleID(roleMember.ID)
+		if err != nil {
+			return nil, err
+		}
+		roleViews = append(roleViews, roleView)
+	}
+
+	return &models.ProjectRole{
+		Roles: roleViews,
+	}, nil
 }
 
 // GetRolesByUserID returns roles for a user.
@@ -60,6 +132,9 @@ func (m *RBACManager) GetUserRoleByUserID(userID int64) (*models.UserRole, error
 			return nil, err
 		}
 		roleViews = append(roleViews, roleView)
+
+		// pass member infos.
+		roleView.Members = []*models.RoleMember{}
 	}
 
 	return &models.UserRole{

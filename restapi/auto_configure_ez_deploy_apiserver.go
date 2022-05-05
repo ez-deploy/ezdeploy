@@ -17,6 +17,7 @@ import (
 	"github.com/ez-deploy/ezdeploy/restapi/operations/identity"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/project"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/r_b_a_c"
+	"github.com/ez-deploy/ezdeploy/restapi/operations/service"
 )
 
 //go:generate swagger generate server --target ../../ezdeploy --name EzDeployApiserver --spec ../swagger.yaml --implementation-package github.com/ez-deploy/ezdeploy/handle --principal github.com/ez-deploy/ezdeploy/models.AuthInfo
@@ -34,6 +35,7 @@ type Handler interface {
 	IdentityHandler
 	ProjectHandler
 	RbacHandler
+	ServiceHandler
 }
 
 // Configurable handles all server configurations
@@ -80,6 +82,26 @@ type RbacHandler interface {
 	GetUserRBAC(params r_b_a_c.GetUserRBACParams, principal *models.AuthInfo) middleware.Responder
 }
 
+/* ServiceHandler  */
+type ServiceHandler interface {
+	/* CreateService Create Service */
+	CreateService(params service.CreateServiceParams, principal *models.AuthInfo) middleware.Responder
+	/* CreateServiceVersion Create Service Version */
+	CreateServiceVersion(params service.CreateServiceVersionParams, principal *models.AuthInfo) middleware.Responder
+	/* DeleteService Delete Service */
+	DeleteService(params service.DeleteServiceParams, principal *models.AuthInfo) middleware.Responder
+	/* GetServiceVersion get Service Version by version ID. */
+	GetServiceVersion(params service.GetServiceVersionParams, principal *models.AuthInfo) middleware.Responder
+	/* ListService List Service by project ID, service ID, service name. */
+	ListService(params service.ListServiceParams, principal *models.AuthInfo) middleware.Responder
+	/* ListServiceVersion List Service Version by service ID. */
+	ListServiceVersion(params service.ListServiceVersionParams, principal *models.AuthInfo) middleware.Responder
+	/* UpdateServiceDescription Update Service Description */
+	UpdateServiceDescription(params service.UpdateServiceDescriptionParams, principal *models.AuthInfo) middleware.Responder
+	/* UpdateServiceVersion Update Service Version */
+	UpdateServiceVersion(params service.UpdateServiceVersionParams, principal *models.AuthInfo) middleware.Responder
+}
+
 func configureFlags(api *operations.EzDeployApiserverAPI) {
 	Impl.ConfigureFlags(api)
 }
@@ -102,8 +124,17 @@ func configureAPI(api *operations.EzDeployApiserverAPI) http.Handler {
 	api.ProjectCreateProjectHandler = project.CreateProjectHandlerFunc(func(params project.CreateProjectParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.CreateProject(params, principal)
 	})
+	api.ServiceCreateServiceHandler = service.CreateServiceHandlerFunc(func(params service.CreateServiceParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.CreateService(params, principal)
+	})
+	api.ServiceCreateServiceVersionHandler = service.CreateServiceVersionHandlerFunc(func(params service.CreateServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.CreateServiceVersion(params, principal)
+	})
 	api.IdentityCreateUserHandler = identity.CreateUserHandlerFunc(func(params identity.CreateUserParams) middleware.Responder {
 		return Impl.CreateUser(params)
+	})
+	api.ServiceDeleteServiceHandler = service.DeleteServiceHandlerFunc(func(params service.DeleteServiceParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.DeleteService(params, principal)
 	})
 	api.ProjectGetProjectHandler = project.GetProjectHandlerFunc(func(params project.GetProjectParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.GetProject(params, principal)
@@ -111,14 +142,29 @@ func configureAPI(api *operations.EzDeployApiserverAPI) http.Handler {
 	api.RbacGetProjectRBACHandler = r_b_a_c.GetProjectRBACHandlerFunc(func(params r_b_a_c.GetProjectRBACParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.GetProjectRBAC(params, principal)
 	})
+	api.ServiceGetServiceVersionHandler = service.GetServiceVersionHandlerFunc(func(params service.GetServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.GetServiceVersion(params, principal)
+	})
 	api.RbacGetUserRBACHandler = r_b_a_c.GetUserRBACHandlerFunc(func(params r_b_a_c.GetUserRBACParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.GetUserRBAC(params, principal)
+	})
+	api.ServiceListServiceHandler = service.ListServiceHandlerFunc(func(params service.ListServiceParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.ListService(params, principal)
+	})
+	api.ServiceListServiceVersionHandler = service.ListServiceVersionHandlerFunc(func(params service.ListServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.ListServiceVersion(params, principal)
 	})
 	api.IdentityLoginHandler = identity.LoginHandlerFunc(func(params identity.LoginParams) middleware.Responder {
 		return Impl.Login(params)
 	})
 	api.IdentityLogoutHandler = identity.LogoutHandlerFunc(func(params identity.LogoutParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.Logout(params, principal)
+	})
+	api.ServiceUpdateServiceDescriptionHandler = service.UpdateServiceDescriptionHandlerFunc(func(params service.UpdateServiceDescriptionParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.UpdateServiceDescription(params, principal)
+	})
+	api.ServiceUpdateServiceVersionHandler = service.UpdateServiceVersionHandlerFunc(func(params service.UpdateServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.UpdateServiceVersion(params, principal)
 	})
 	api.IdentityWhoamiHandler = identity.WhoamiHandlerFunc(func(params identity.WhoamiParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.Whoami(params, principal)

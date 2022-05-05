@@ -57,14 +57,14 @@ func (o *GetProjectRBACOK) WriteResponse(rw http.ResponseWriter, producer runtim
 	}
 }
 
-// GetProjectRBACNotFoundCode is the HTTP code returned for type GetProjectRBACNotFound
-const GetProjectRBACNotFoundCode int = 404
+// GetProjectRBACForbiddenCode is the HTTP code returned for type GetProjectRBACForbidden
+const GetProjectRBACForbiddenCode int = 403
 
-/*GetProjectRBACNotFound Get Project RBAC Failed, cause project not exist
+/*GetProjectRBACForbidden Get Project RBAC Failed, cause project not exist
 
-swagger:response getProjectRBACNotFound
+swagger:response getProjectRBACForbidden
 */
-type GetProjectRBACNotFound struct {
+type GetProjectRBACForbidden struct {
 
 	/*
 	  In: Body
@@ -72,27 +72,27 @@ type GetProjectRBACNotFound struct {
 	Payload *models.Error `json:"body,omitempty"`
 }
 
-// NewGetProjectRBACNotFound creates GetProjectRBACNotFound with default headers values
-func NewGetProjectRBACNotFound() *GetProjectRBACNotFound {
+// NewGetProjectRBACForbidden creates GetProjectRBACForbidden with default headers values
+func NewGetProjectRBACForbidden() *GetProjectRBACForbidden {
 
-	return &GetProjectRBACNotFound{}
+	return &GetProjectRBACForbidden{}
 }
 
-// WithPayload adds the payload to the get project r b a c not found response
-func (o *GetProjectRBACNotFound) WithPayload(payload *models.Error) *GetProjectRBACNotFound {
+// WithPayload adds the payload to the get project r b a c forbidden response
+func (o *GetProjectRBACForbidden) WithPayload(payload *models.Error) *GetProjectRBACForbidden {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the get project r b a c not found response
-func (o *GetProjectRBACNotFound) SetPayload(payload *models.Error) {
+// SetPayload sets the payload to the get project r b a c forbidden response
+func (o *GetProjectRBACForbidden) SetPayload(payload *models.Error) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *GetProjectRBACNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *GetProjectRBACForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(404)
+	rw.WriteHeader(403)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

@@ -4,10 +4,14 @@ import "k8s.io/client-go/kubernetes"
 
 type K8SManager struct {
 	*NamespaceManager
+	*ServiceManager
+	*DeploymentManager
 }
 
 func New(clientSet *kubernetes.Clientset) *K8SManager {
 	return &K8SManager{
-		NamespaceManager: &NamespaceManager{ClientSet: clientSet},
+		NamespaceManager:  &NamespaceManager{ClientSet: clientSet},
+		ServiceManager:    &ServiceManager{ClientSet: clientSet},
+		DeploymentManager: &DeploymentManager{ClientSet: clientSet},
 	}
 }
