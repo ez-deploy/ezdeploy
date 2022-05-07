@@ -15,6 +15,7 @@ import (
 	"github.com/ez-deploy/ezdeploy/models"
 	"github.com/ez-deploy/ezdeploy/restapi/operations"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/identity"
+	"github.com/ez-deploy/ezdeploy/restapi/operations/pod"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/project"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/r_b_a_c"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/service"
@@ -33,6 +34,7 @@ type Handler interface {
 	Authable
 	Configurable
 	IdentityHandler
+	PodHandler
 	ProjectHandler
 	RbacHandler
 	ServiceHandler
@@ -66,6 +68,14 @@ type IdentityHandler interface {
 	Logout(params identity.LogoutParams, principal *models.AuthInfo) middleware.Responder
 	/* Whoami Get Current User's Info */
 	Whoami(params identity.WhoamiParams, principal *models.AuthInfo) middleware.Responder
+}
+
+/* PodHandler  */
+type PodHandler interface {
+	/* CheckPodTicket Check Pod Ticket, and delete it */
+	CheckPodTicket(params pod.CheckPodTicketParams) middleware.Responder
+	/* CreatePodTicket Create Visit Pod Once Ticket */
+	CreatePodTicket(params pod.CreatePodTicketParams, principal *models.AuthInfo) middleware.Responder
 }
 
 /* ProjectHandler  */
@@ -125,6 +135,12 @@ func configureAPI(api *operations.EzDeployApiserverAPI) http.Handler {
 		return Impl.KeyAuth(token)
 	}
 
+	api.PodCheckPodTicketHandler = pod.CheckPodTicketHandlerFunc(func(params pod.CheckPodTicketParams) middleware.Responder {
+		return Impl.CheckPodTicket(params)
+	})
+	api.PodCreatePodTicketHandler = pod.CreatePodTicketHandlerFunc(func(params pod.CreatePodTicketParams, principal *models.AuthInfo) middleware.Responder {
+		return Impl.CreatePodTicket(params, principal)
+	})
 	api.ProjectCreateProjectHandler = project.CreateProjectHandlerFunc(func(params project.CreateProjectParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.CreateProject(params, principal)
 	})

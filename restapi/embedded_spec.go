@@ -715,6 +715,93 @@ func init() {
         }
       }
     },
+    "/visit/pod/ticket/check": {
+      "get": {
+        "security": [],
+        "description": "Check Pod Ticket, and delete it",
+        "tags": [
+          "Pod"
+        ],
+        "operationId": "CheckPodTicket",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ticket_value",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Check Pod Ticket Success, return pod ticket info.",
+            "schema": {
+              "$ref": "#/definitions/SSHPodTicket"
+            }
+          },
+          "403": {
+            "description": "Check Pod Ticket Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/visit/pod/ticket/create": {
+      "post": {
+        "description": "Create Visit Pod Once Ticket",
+        "tags": [
+          "Pod"
+        ],
+        "operationId": "CreatePodTicket",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pod_name": {
+                  "description": "pod name",
+                  "type": "string"
+                },
+                "project_id": {
+                  "description": "project id",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create Pod Ticket Success, return pod ticket info.",
+            "schema": {
+              "$ref": "#/definitions/SSHPodTicket"
+            }
+          },
+          "403": {
+            "description": "Create Pod Ticket Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/whoami": {
       "get": {
         "description": "Get Current User's Info",
@@ -961,6 +1048,41 @@ func init() {
           "items": {
             "$ref": "#/definitions/RolePermission"
           }
+        }
+      }
+    },
+    "SSHPodTicket": {
+      "description": "SSH Pod Ticket Object",
+      "type": "object",
+      "properties": {
+        "create_at": {
+          "description": "create at, unix timestamp",
+          "type": "integer"
+        },
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "namespace_name": {
+          "description": "namespace name",
+          "type": "string",
+          "example": "foobar"
+        },
+        "pod_name": {
+          "description": "pod name",
+          "type": "string",
+          "example": "foobar-9zqb2"
+        },
+        "ticket": {
+          "description": "ticket",
+          "type": "string",
+          "example": "AISBJFCOIZXUF=="
+        },
+        "user_id": {
+          "description": "user id",
+          "type": "integer",
+          "example": 1
         }
       }
     },
@@ -1877,6 +1999,93 @@ func init() {
         }
       }
     },
+    "/visit/pod/ticket/check": {
+      "get": {
+        "security": [],
+        "description": "Check Pod Ticket, and delete it",
+        "tags": [
+          "Pod"
+        ],
+        "operationId": "CheckPodTicket",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ticket_value",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Check Pod Ticket Success, return pod ticket info.",
+            "schema": {
+              "$ref": "#/definitions/SSHPodTicket"
+            }
+          },
+          "403": {
+            "description": "Check Pod Ticket Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/visit/pod/ticket/create": {
+      "post": {
+        "description": "Create Visit Pod Once Ticket",
+        "tags": [
+          "Pod"
+        ],
+        "operationId": "CreatePodTicket",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pod_name": {
+                  "description": "pod name",
+                  "type": "string"
+                },
+                "project_id": {
+                  "description": "project id",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create Pod Ticket Success, return pod ticket info.",
+            "schema": {
+              "$ref": "#/definitions/SSHPodTicket"
+            }
+          },
+          "403": {
+            "description": "Create Pod Ticket Failed, cause do not have permisssion",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/whoami": {
       "get": {
         "description": "Get Current User's Info",
@@ -2123,6 +2332,41 @@ func init() {
           "items": {
             "$ref": "#/definitions/RolePermission"
           }
+        }
+      }
+    },
+    "SSHPodTicket": {
+      "description": "SSH Pod Ticket Object",
+      "type": "object",
+      "properties": {
+        "create_at": {
+          "description": "create at, unix timestamp",
+          "type": "integer"
+        },
+        "id": {
+          "description": "id",
+          "type": "integer",
+          "example": 1
+        },
+        "namespace_name": {
+          "description": "namespace name",
+          "type": "string",
+          "example": "foobar"
+        },
+        "pod_name": {
+          "description": "pod name",
+          "type": "string",
+          "example": "foobar-9zqb2"
+        },
+        "ticket": {
+          "description": "ticket",
+          "type": "string",
+          "example": "AISBJFCOIZXUF=="
+        },
+        "user_id": {
+          "description": "user id",
+          "type": "integer",
+          "example": 1
         }
       }
     },

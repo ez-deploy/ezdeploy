@@ -17,6 +17,7 @@ type Tables struct {
 	RoleInfo            *sqlm.Table
 	RoleMember          *sqlm.Table
 	RolePermission      *sqlm.Table
+	Ticket              *sqlm.Table
 }
 
 var (
@@ -30,6 +31,7 @@ var (
 	roleInfoRowModel           = func() interface{} { return &models.RoleInfo{} }
 	roleMemberRowModel         = func() interface{} { return &models.RoleMember{} }
 	rolePermissionRowModel     = func() interface{} { return &models.RolePermission{} }
+	ticketRowModel             = func() interface{} { return &models.SSHPodTicket{} }
 )
 
 // NewTables connect db and create Tables by dsn.
@@ -52,6 +54,7 @@ func NewTables(dsn string) (*Tables, error) {
 		RoleInfo:            newSqlmTableWithModeler(database, "role_info", roleInfoRowModel),
 		RoleMember:          newSqlmTableWithModeler(database, "role_member", roleMemberRowModel),
 		RolePermission:      newSqlmTableWithModeler(database, "role_permission", rolePermissionRowModel),
+		Ticket:              newSqlmTableWithModeler(database, "ticket", ticketRowModel),
 	}
 
 	return retTables, nil

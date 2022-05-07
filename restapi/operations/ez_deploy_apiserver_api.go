@@ -21,6 +21,7 @@ import (
 
 	"github.com/ez-deploy/ezdeploy/models"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/identity"
+	"github.com/ez-deploy/ezdeploy/restapi/operations/pod"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/project"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/r_b_a_c"
 	"github.com/ez-deploy/ezdeploy/restapi/operations/service"
@@ -48,6 +49,12 @@ func NewEzDeployApiserverAPI(spec *loads.Document) *EzDeployApiserverAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		PodCheckPodTicketHandler: pod.CheckPodTicketHandlerFunc(func(params pod.CheckPodTicketParams) middleware.Responder {
+			return middleware.NotImplemented("operation pod.CheckPodTicket has not yet been implemented")
+		}),
+		PodCreatePodTicketHandler: pod.CreatePodTicketHandlerFunc(func(params pod.CreatePodTicketParams, principal *models.AuthInfo) middleware.Responder {
+			return middleware.NotImplemented("operation pod.CreatePodTicket has not yet been implemented")
+		}),
 		ProjectCreateProjectHandler: project.CreateProjectHandlerFunc(func(params project.CreateProjectParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation project.CreateProject has not yet been implemented")
 		}),
@@ -152,6 +159,10 @@ type EzDeployApiserverAPI struct {
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
 
+	// PodCheckPodTicketHandler sets the operation handler for the check pod ticket operation
+	PodCheckPodTicketHandler pod.CheckPodTicketHandler
+	// PodCreatePodTicketHandler sets the operation handler for the create pod ticket operation
+	PodCreatePodTicketHandler pod.CreatePodTicketHandler
 	// ProjectCreateProjectHandler sets the operation handler for the create project operation
 	ProjectCreateProjectHandler project.CreateProjectHandler
 	// ServiceCreateServiceHandler sets the operation handler for the create service operation
@@ -269,6 +280,12 @@ func (o *EzDeployApiserverAPI) Validate() error {
 		unregistered = append(unregistered, "CookieAuth")
 	}
 
+	if o.PodCheckPodTicketHandler == nil {
+		unregistered = append(unregistered, "pod.CheckPodTicketHandler")
+	}
+	if o.PodCreatePodTicketHandler == nil {
+		unregistered = append(unregistered, "pod.CreatePodTicketHandler")
+	}
 	if o.ProjectCreateProjectHandler == nil {
 		unregistered = append(unregistered, "project.CreateProjectHandler")
 	}
@@ -422,6 +439,14 @@ func (o *EzDeployApiserverAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/visit/pod/ticket/check"] = pod.NewCheckPodTicket(o.context, o.PodCheckPodTicketHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/visit/pod/ticket/create"] = pod.NewCreatePodTicket(o.context, o.PodCreatePodTicketHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

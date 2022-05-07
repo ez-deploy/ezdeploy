@@ -469,6 +469,63 @@ paths:
           description: Server Error
           schema:
             $ref: '#/definitions/Error'
+  /visit/pod/ticket/create:
+    post:
+      tags:
+        - Pod
+      operationId: CreatePodTicket
+      description: Create Visit Pod Once Ticket
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            pod_name:
+              type: string
+              description: pod name
+            project_id:
+              type: integer
+              description: project id
+      responses:
+        "201":
+          description: Create Pod Ticket Success, return pod ticket info.
+          schema:
+            $ref: '#/definitions/SSHPodTicket'
+        "403":
+          description: Create Pod Ticket Failed, cause do not have permisssion
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /visit/pod/ticket/check:
+    get:
+      tags:
+        - Pod
+      security: []
+      operationId: CheckPodTicket
+      description: Check Pod Ticket, and delete it
+      parameters:
+      - name: ticket_value
+        type: string
+        in: query
+        required: true
+      responses:
+        "200":
+          description: Check Pod Ticket Success, return pod ticket info.
+          schema:
+            $ref: '#/definitions/SSHPodTicket'
+        "403":
+          description: Check Pod Ticket Failed, cause do not have permisssion
+          schema:
+            $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
 definitions:
   UserInfo:
     type: object
@@ -790,6 +847,33 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/RoleView'
+  SSHPodTicket:
+    type: object
+    description: SSH Pod Ticket Object
+    properties:
+      id:
+        description: id
+        type: integer
+        example: 1
+      ticket:
+        description: ticket
+        type: string
+        example: AISBJFCOIZXUF==
+      user_id:
+        description: user id
+        type: integer
+        example: 1
+      namespace_name:
+        description: namespace name
+        type: string
+        example: foobar
+      pod_name:
+        description: pod name
+        type: string
+        example: foobar-9zqb2
+      create_at:
+        description: create at, unix timestamp
+        type: integer
   AuthInfo:
     type: object
     properties:

@@ -20,6 +20,7 @@ pre_gen_server:
 	@cp ./models/role_info.go ./role_info.go.back
 	@cp ./models/role_member.go ./role_member.go.back
 	@cp ./models/role_permission.go ./role_permission.go.back
+	@cp ./models/ssh_pod_ticket.go ./ssh_pod_ticket.go.back
 
 # only used by `make gen_server`, restore some models.
 post_gen_server:
@@ -32,6 +33,7 @@ post_gen_server:
 	@mv ./role_info.go.back ./models/role_info.go
 	@mv ./role_member.go.back ./models/role_member.go
 	@mv ./role_permission.go.back ./models/role_permission.go
+	@mv ./ssh_pod_ticket.go.back ./models/ssh_pod_ticket.go
 
 gen_server:
 	@make pre_gen_server

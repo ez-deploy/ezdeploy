@@ -8,6 +8,7 @@ import (
 	"github.com/ez-deploy/ezdeploy/handle/project"
 	"github.com/ez-deploy/ezdeploy/handle/rbac"
 	"github.com/ez-deploy/ezdeploy/handle/service"
+	"github.com/ez-deploy/ezdeploy/handle/ticket"
 	"github.com/ez-deploy/ezdeploy/handle/user"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -22,6 +23,7 @@ type handlerImpl struct {
 	*project.ProjectOperationImpl
 	*rbac.RBACOperationImpl
 	*service.ServiceOperationImpl
+	*ticket.TicketOperationsImpl
 }
 
 const dsn = "kratos:123456@tcp(localhost:3306)/ezdeploy?charset=utf8mb4&parseTime=True"
@@ -58,5 +60,6 @@ func New() *handlerImpl {
 			},
 			K8SManager: k8sClientSet,
 		},
+		TicketOperationsImpl: &ticket.TicketOperationsImpl{Tables: tables},
 	}
 }

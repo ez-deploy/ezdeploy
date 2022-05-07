@@ -155,7 +155,6 @@ func (s *ServiceOperationImpl) UpdateServiceVersion(params serviceop.UpdateServi
 // CreateService will only create service, not create service version.
 // To Deploy and expose version, user should create service version first, and then call UpdateServiceVersion function.
 func (s *ServiceOperationImpl) CreateService(params serviceop.CreateServiceParams, principal *models.AuthInfo) middleware.Responder {
-	fmt.Println(params.Body)
 	allowed, err := newRBACManager(s.Tables).Check(principal.UserInfo.ID, params.Body.ProjectID, models.RolePermissionPermissionWrite)
 	if err != nil {
 		errBody := newError("get permission info failed", err.Error())
@@ -165,8 +164,6 @@ func (s *ServiceOperationImpl) CreateService(params serviceop.CreateServiceParam
 		errBody := newError("permission denied")
 		return serviceop.NewCreateServiceForbidden().WithPayload(errBody)
 	}
-
-	fmt.Println(params.Body)
 
 	createSVC := params.Body
 	createSVC.CreateAt = time.Now().Unix()
