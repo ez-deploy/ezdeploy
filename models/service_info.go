@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -117,6 +118,7 @@ func (m *ServiceInfo) validateExposeType(formats strfmt.Registry) error {
 	}
 
 	// value enum
+	fmt.Println("get valid type")
 	if err := m.validateExposeTypeEnum("expose_type", "body", m.ExposeType); err != nil {
 		return err
 	}

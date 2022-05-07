@@ -44,6 +44,9 @@ func (o *ListServiceVersionURL) Build() (*url.URL, error) {
 	var _path = "/service/version/list"
 
 	_basePath := o._basePath
+	if _basePath == "" {
+		_basePath = "/api"
+	}
 	_result.Path = golangswaggerpaths.Join(_basePath, _path)
 
 	qs := make(url.Values)

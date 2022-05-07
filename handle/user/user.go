@@ -23,6 +23,17 @@ type UserOperationImpl struct {
 	Tables *db.Tables
 }
 
+/* GetUser Get User Info by id */
+func (u *UserOperationImpl) GetUser(params identity.GetUserParams) middleware.Responder {
+	userInfo := &models.UserInfo{}
+	if err := u.Tables.User.Get(sqlm.SelectorFilter{"id": params.ID}, userInfo); err != nil {
+		errorBody := newError("get user error, get err = ", err.Error())
+		return identity.NewGetUserInternalServerError().WithPayload(errorBody)
+	}
+
+	return identity.NewGetUserOK().WithPayload(userInfo)
+}
+
 // CreateUser Create user.
 func (u *UserOperationImpl) CreateUser(params identity.CreateUserParams) middleware.Responder {
 	userInfo := params.Body
@@ -117,6 +128,7 @@ func (u *UserOperationImpl) KeyAuth(value string) (*models.AuthInfo, error) {
 	if err != nil {
 		return nil, err
 	}
+	userInfo.Password = ""
 
 	return &models.AuthInfo{UserInfo: userInfo, Token: token}, nil
 }

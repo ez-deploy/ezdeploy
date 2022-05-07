@@ -58,6 +58,8 @@ type Authable interface {
 type IdentityHandler interface {
 	/* CreateUser Create User */
 	CreateUser(params identity.CreateUserParams) middleware.Responder
+	/* GetUser Get User Info by id */
+	GetUser(params identity.GetUserParams) middleware.Responder
 	/* Login User Login */
 	Login(params identity.LoginParams) middleware.Responder
 	/* Logout Logout */
@@ -146,6 +148,9 @@ func configureAPI(api *operations.EzDeployApiserverAPI) http.Handler {
 	})
 	api.ServiceGetServiceVersionHandler = service.GetServiceVersionHandlerFunc(func(params service.GetServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.GetServiceVersion(params, principal)
+	})
+	api.IdentityGetUserHandler = identity.GetUserHandlerFunc(func(params identity.GetUserParams) middleware.Responder {
+		return Impl.GetUser(params)
 	})
 	api.RbacGetUserRBACHandler = r_b_a_c.GetUserRBACHandlerFunc(func(params r_b_a_c.GetUserRBACParams, principal *models.AuthInfo) middleware.Responder {
 		return Impl.GetUserRBAC(params, principal)

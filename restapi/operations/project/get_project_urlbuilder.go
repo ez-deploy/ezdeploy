@@ -44,6 +44,9 @@ func (o *GetProjectURL) Build() (*url.URL, error) {
 	var _path = "/project/get"
 
 	_basePath := o._basePath
+	if _basePath == "" {
+		_basePath = "/api"
+	}
 	_result.Path = golangswaggerpaths.Join(_basePath, _path)
 
 	qs := make(url.Values)

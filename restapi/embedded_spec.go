@@ -33,6 +33,7 @@ func init() {
     "title": "ez-deploy apiserver.",
     "version": "1.0.0"
   },
+  "basePath": "/api",
   "paths": {
     "/project/create": {
       "post": {
@@ -598,6 +599,39 @@ func init() {
             "description": "Create User Failed, cause user exist",
             "schema": {
               "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/user/get": {
+      "get": {
+        "security": [],
+        "description": "Get User Info by id",
+        "tags": [
+          "Identity"
+        ],
+        "operationId": "GetUser",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "User id",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get User Success",
+            "schema": {
+              "$ref": "#/definitions/UserInfo"
             }
           },
           "500": {
@@ -1161,6 +1195,7 @@ func init() {
     "title": "ez-deploy apiserver.",
     "version": "1.0.0"
   },
+  "basePath": "/api",
   "paths": {
     "/project/create": {
       "post": {
@@ -1726,6 +1761,39 @@ func init() {
             "description": "Create User Failed, cause user exist",
             "schema": {
               "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/user/get": {
+      "get": {
+        "security": [],
+        "description": "Get User Info by id",
+        "tags": [
+          "Identity"
+        ],
+        "operationId": "GetUser",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "User id",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get User Success",
+            "schema": {
+              "$ref": "#/definitions/UserInfo"
             }
           },
           "500": {

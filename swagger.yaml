@@ -4,6 +4,7 @@ produces:
   - application/json
 schemes:
   - http
+basePath: /api
 swagger: "2.0"
 info:
   description: apiserver
@@ -86,6 +87,28 @@ paths:
           description: Logout Failed, no login
           schema:
             $ref: '#/definitions/Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+  /user/get:
+    get:
+      tags:
+        - Identity
+      operationId: GetUser
+      description: Get User Info by id
+      security: []
+      parameters:
+        - name: id
+          in: query
+          required: true
+          type: integer
+          description: User id
+      responses:
+        "200":
+          description: Get User Success
+          schema:
+            $ref: '#/definitions/UserInfo'
         "500":
           description: Server Error
           schema:

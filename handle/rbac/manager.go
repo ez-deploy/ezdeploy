@@ -132,9 +132,6 @@ func (m *RBACManager) GetUserRoleByUserID(userID int64) (*models.UserRole, error
 			return nil, err
 		}
 		roleViews = append(roleViews, roleView)
-
-		// pass member infos.
-		roleView.Members = []*models.RoleMember{}
 	}
 
 	return &models.UserRole{

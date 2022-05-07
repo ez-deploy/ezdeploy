@@ -72,6 +72,9 @@ func NewEzDeployApiserverAPI(spec *loads.Document) *EzDeployApiserverAPI {
 		ServiceGetServiceVersionHandler: service.GetServiceVersionHandlerFunc(func(params service.GetServiceVersionParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation service.GetServiceVersion has not yet been implemented")
 		}),
+		IdentityGetUserHandler: identity.GetUserHandlerFunc(func(params identity.GetUserParams) middleware.Responder {
+			return middleware.NotImplemented("operation identity.GetUser has not yet been implemented")
+		}),
 		RbacGetUserRBACHandler: r_b_a_c.GetUserRBACHandlerFunc(func(params r_b_a_c.GetUserRBACParams, principal *models.AuthInfo) middleware.Responder {
 			return middleware.NotImplemented("operation r_b_a_c.GetUserRBAC has not yet been implemented")
 		}),
@@ -165,6 +168,8 @@ type EzDeployApiserverAPI struct {
 	RbacGetProjectRBACHandler r_b_a_c.GetProjectRBACHandler
 	// ServiceGetServiceVersionHandler sets the operation handler for the get service version operation
 	ServiceGetServiceVersionHandler service.GetServiceVersionHandler
+	// IdentityGetUserHandler sets the operation handler for the get user operation
+	IdentityGetUserHandler identity.GetUserHandler
 	// RbacGetUserRBACHandler sets the operation handler for the get user r b a c operation
 	RbacGetUserRBACHandler r_b_a_c.GetUserRBACHandler
 	// ServiceListServiceHandler sets the operation handler for the list service operation
@@ -287,6 +292,9 @@ func (o *EzDeployApiserverAPI) Validate() error {
 	}
 	if o.ServiceGetServiceVersionHandler == nil {
 		unregistered = append(unregistered, "service.GetServiceVersionHandler")
+	}
+	if o.IdentityGetUserHandler == nil {
+		unregistered = append(unregistered, "identity.GetUserHandler")
 	}
 	if o.RbacGetUserRBACHandler == nil {
 		unregistered = append(unregistered, "r_b_a_c.GetUserRBACHandler")
@@ -446,6 +454,10 @@ func (o *EzDeployApiserverAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/service/version/get"] = service.NewGetServiceVersion(o.context, o.ServiceGetServiceVersionHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/user/get"] = identity.NewGetUser(o.context, o.IdentityGetUserHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
