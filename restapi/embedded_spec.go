@@ -766,17 +766,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "pod_name": {
-                  "description": "pod name",
-                  "type": "string"
-                },
-                "project_id": {
-                  "description": "project id",
-                  "type": "integer"
-                }
-              }
+              "$ref": "#/definitions/GetTicketReq"
             }
           }
         ],
@@ -867,6 +857,22 @@ func init() {
           "description": "错误信息",
           "type": "string",
           "example": "error message"
+        }
+      }
+    },
+    "GetTicketReq": {
+      "description": "SSH Pod Ticket Object",
+      "type": "object",
+      "properties": {
+        "pod_name": {
+          "description": "pod name",
+          "type": "string",
+          "example": "foobar-9zqb2"
+        },
+        "project_id": {
+          "description": "project id",
+          "type": "integer",
+          "example": 1
         }
       }
     },
@@ -2050,17 +2056,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "pod_name": {
-                  "description": "pod name",
-                  "type": "string"
-                },
-                "project_id": {
-                  "description": "project id",
-                  "type": "integer"
-                }
-              }
+              "$ref": "#/definitions/GetTicketReq"
             }
           }
         ],
@@ -2151,6 +2147,22 @@ func init() {
           "description": "错误信息",
           "type": "string",
           "example": "error message"
+        }
+      }
+    },
+    "GetTicketReq": {
+      "description": "SSH Pod Ticket Object",
+      "type": "object",
+      "properties": {
+        "pod_name": {
+          "description": "pod name",
+          "type": "string",
+          "example": "foobar-9zqb2"
+        },
+        "project_id": {
+          "description": "project id",
+          "type": "integer",
+          "example": 1
         }
       }
     },

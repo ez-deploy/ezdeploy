@@ -69,7 +69,7 @@ func (t *TicketOperationsImpl) CreatePodTicket(params pod.CreatePodTicketParams,
 	createTicket := &models.SSHPodTicket{
 		NamespaceName: proj.Name,
 		PodName:       params.Body.PodName,
-		Ticket:        randstr.Base64(128),
+		Ticket:        randstr.Hex(64),
 		UserID:        principal.UserInfo.ID,
 		CreateAt:      time.Now().Unix(),
 	}

@@ -14,6 +14,8 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/validate"
+
+	"github.com/ez-deploy/ezdeploy/models"
 )
 
 // NewCreatePodTicketParams creates a new CreatePodTicketParams object
@@ -37,7 +39,7 @@ type CreatePodTicketParams struct {
 	  Required: true
 	  In: body
 	*/
-	Body CreatePodTicketBody
+	Body *models.GetTicketReq
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -51,7 +53,7 @@ func (o *CreatePodTicketParams) BindRequest(r *http.Request, route *middleware.M
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body CreatePodTicketBody
+		var body models.GetTicketReq
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
 				res = append(res, errors.Required("body", "body", ""))
@@ -70,7 +72,7 @@ func (o *CreatePodTicketParams) BindRequest(r *http.Request, route *middleware.M
 			}
 
 			if len(res) == 0 {
-				o.Body = body
+				o.Body = &body
 			}
 		}
 	} else {

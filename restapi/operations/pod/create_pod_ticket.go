@@ -6,12 +6,9 @@ package pod
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
 
 	"github.com/ez-deploy/ezdeploy/models"
 )
@@ -71,44 +68,4 @@ func (o *CreatePodTicket) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	res := o.Handler.Handle(Params, principal) // actually handle the request
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
-}
-
-// CreatePodTicketBody create pod ticket body
-//
-// swagger:model CreatePodTicketBody
-type CreatePodTicketBody struct {
-
-	// pod name
-	PodName string `json:"pod_name,omitempty"`
-
-	// project id
-	ProjectID int64 `json:"project_id,omitempty"`
-}
-
-// Validate validates this create pod ticket body
-func (o *CreatePodTicketBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this create pod ticket body based on context it is used
-func (o *CreatePodTicketBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *CreatePodTicketBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *CreatePodTicketBody) UnmarshalBinary(b []byte) error {
-	var res CreatePodTicketBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
 }

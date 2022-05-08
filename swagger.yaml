@@ -480,14 +480,7 @@ paths:
         in: body
         required: true
         schema:
-          type: object
-          properties:
-            pod_name:
-              type: string
-              description: pod name
-            project_id:
-              type: integer
-              description: project id
+          $ref: "#/definitions/GetTicketReq"
       responses:
         "201":
           description: Create Pod Ticket Success, return pod ticket info.
@@ -874,6 +867,18 @@ definitions:
       create_at:
         description: create at, unix timestamp
         type: integer
+  GetTicketReq:
+    type: object
+    description: SSH Pod Ticket Object
+    properties:
+      project_id:
+        description: project id
+        type: integer
+        example: 1
+      pod_name:
+        description: pod name
+        type: string
+        example: foobar-9zqb2
   AuthInfo:
     type: object
     properties:
